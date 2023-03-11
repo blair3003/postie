@@ -1,26 +1,19 @@
-const Header = () => {
-    return (
-        <header>
-            <h1>Postie</h1>
-        </header>
-    )
-}
-
-const Main = () => {
-    return (
-        <main>
-            <p>The main content</p>
-        </main>
-    )
-}
-
+import { Routes, Route } from 'react-router-dom'
+import { ApplicationContextProvider } from './app/store'
+import Layout from './layouts/Layout'
+import Feed from './features/Feed'
 
 function App() {
     return (
-        <>
-            <Header />
-            <Main />
-        </>
+        <ApplicationContextProvider>
+            <Routes>
+                <Route path="/" element={<Layout />}>
+
+                    <Route index element={<Feed />} />
+
+                </Route>
+            </Routes>
+        </ApplicationContextProvider>
     )
 }
 
