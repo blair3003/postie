@@ -1,5 +1,5 @@
 import { useApplicationContext } from '../app/store'
-import Post from './Post'
+import PostPreview from './posts/PostPreview'
 
 const Feed = () => {
 
@@ -11,7 +11,7 @@ const Feed = () => {
             <div className="auto-grid">
                 {loading ? <p>Loading...</p> :
                 error ? <p>Error loading posts!</p> : 
-                posts ? posts.map(post => <Post key={post._id} post={post} />) : null}
+                posts ? posts.map(post => <PostPreview key={post._id} post={post} />) : null}
             </div>
         </section>
     )
