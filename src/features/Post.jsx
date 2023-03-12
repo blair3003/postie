@@ -1,9 +1,9 @@
 const Post = ({ post }) => {
 
     return (
-        <article>
-            <div className="bg-gray-100 p-4 rounded-lg">
-                <img src={post.thumbnail ?? 'img/default-thumbnail.png'} alt={post.title} />
+        <article className="">
+            <div className="bg-white p-4 rounded-lg">
+                <img className="w-full" src={post.thumbnail ?? 'img/default-thumbnail.png'} alt={post.title} />
             </div>
             <div className="flex gap-4 p-4">
                 <div className="w-12">

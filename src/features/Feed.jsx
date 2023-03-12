@@ -8,7 +8,7 @@ const Feed = () => {
     return (
         <section id="feed">
             <h2 className="offscreen">Feed</h2>
-            <div className="flex">
+            <div className="auto-grid">
                 {loading ? <p>Loading...</p> :
                 error ? <p>Error loading posts!</p> : 
                 posts ? posts.map(post => <Post key={post._id} post={post} />) : null}
