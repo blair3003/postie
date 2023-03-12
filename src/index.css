@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+#root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
 .offscreen {
     position: absolute;
     left: -9999px;
