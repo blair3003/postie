@@ -83,7 +83,7 @@ const PostCreate = () => {
                         value={tag}
                         onChange={handleTagChange}
                     />
-                    <button type="button" onClick={handleAddTag} className="p-4 bg-yellow-500 text-black rounded-lg w-12 h-12 grid content-center">+</button>
+                    <button type="button" onClick={handleAddTag} className="p-4 hover:bg-yellow-500 text-black rounded-full w-12 h-12 grid content-center text-xl font-bold">+</button>
                 </div>
             </div>
             <button type="submit" className="p-4 bg-black text-white rounded-lg">Post</button>
