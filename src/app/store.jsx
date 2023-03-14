@@ -18,6 +18,7 @@ export const ApplicationContextProvider = ({ children }) => {
     const [post, setPost] = useState()
     const [postId, setPostId] = useState()
     const [posts, setPosts] = useState([])
+    const [success, setSuccess] = useState(false)
     const [error, setError] = useState(false)
     const [loading, setLoading] = useState(false)
     
@@ -41,6 +42,7 @@ export const ApplicationContextProvider = ({ children }) => {
 
     const fetchPost = async (id) => {
         try {
+            console.log(`Fetchin gpost ${id}`)
             setError(false)
             setLoading(true)
             const response = await fetch(`http://localhost:3500/posts/${id}`)
@@ -53,6 +55,31 @@ export const ApplicationContextProvider = ({ children }) => {
         } finally {
             setLoading(false)
         }        
+    }
+
+    const createPost = async (data) => {
+        try {
+            setError(false)
+            setLoading(true)
+            setSuccess(false)
+            const response = await fetch('http://localhost:3500/posts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            if(!response.ok) throw new Error(`FetchError: ${response.status}`)
+            const post = await response.json()
+            setPostId(post.post._id)
+            setSuccess(true)
+        } catch (err) {
+            console.error(err)
+            setError(true)
+        } finally {
+            setLoading(false)
+        }
+
     }
     
     useEffect(() => {
@@ -71,10 +98,12 @@ export const ApplicationContextProvider = ({ children }) => {
         <ApplicationContext.Provider value={{
             post,
             setPostId,
+            createPost,
             posts,
             loading,
             error,
-            setError
+            setError,
+            success
         }}>
             {children}
         </ApplicationContext.Provider>

@@ -1,4 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { AiOutlinePlus, AiOutlineClose } from 'react-icons/ai'
+import { useApplicationContext } from '../../app/store'
 
 const PostCreate = () => {
 
@@ -7,20 +10,33 @@ const PostCreate = () => {
     const [body, setBody] = useState('')
     const [tag, setTag] = useState('')
     const [tags, setTags] = useState([])
-    const [author, setAuthor] = useState({
-        id: "6407970a85841dc03653c00c",
-        name: "Blair"
-    })
+    const [authorId, setAuthorId] = useState("6407970a85841dc03653c00c")
+
+    const navigate = useNavigate()
+
+    const { createPost, postId, loading, error, success } = useApplicationContext()
+
+    // useEffect(() => {
+    //     if (success) {
+    //         setTitle('')
+    //         setThumbnail('')
+    //         setBody('')
+    //         setTags([])
+    //         navigate(`/posts/${postId}`)
+    //     }
+    // }, [success, navigate])
 
     const handleTitleChange = e => setTitle(e.target.value)
     const handleThumbnailChange = e => setThumbnail(e.target.value)
     const handleBodyChange = e => setBody(e.target.value)
     const handleTagChange = e => setTag(e.target.value)
 
+    const canSave = [title, body, authorId].every(Boolean)
+
     const handleAddTag = e => {
         e.preventDefault()
-        if (tag && !tags.includes(tag)) {
-            setTags(tags => [...tags, tag])
+        if (tag && !tags.includes(tag.toLowerCase())) {
+            setTags(tags => [...tags, tag.toLowerCase()])
         }
         setTag('')
     }
@@ -30,8 +46,16 @@ const PostCreate = () => {
     }
 
     const handleSubmitPost = async (e) => {
-        console.log(`submitting`)
         e.preventDefault()
+        if (canSave) {
+            await createPost({
+                title,
+                thumbnail,
+                body,
+                tags,
+                authorId
+            })
+        }
     }
     
     return (
@@ -69,7 +93,7 @@ const PostCreate = () => {
                 <div className="flex items-center gap-2 flex-wrap mb-4">
                     <h3 className="text-white text-xl font-montserrat uppercase">Tags:</h3>
                     {tags ? tags.map(tag => (
-                        <span key={tag} onClick={handleRemoveTag} className="px-4 bg-yellow-500 text-black rounded-full cursor-pointer">{tag}</span>
+                        <div key={tag} onClick={handleRemoveTag} className="px-3 pb-1 bg-yellow-500 text-black rounded-full cursor-pointer">{tag}</div>
                     )) : null}
                 </div>
                 
@@ -83,10 +107,12 @@ const PostCreate = () => {
                         value={tag}
                         onChange={handleTagChange}
                     />
-                    <button type="button" onClick={handleAddTag} className="p-4 hover:bg-yellow-500 text-black rounded-full w-12 h-12 grid content-center text-xl font-bold">+</button>
+                    <button type="button" onClick={handleAddTag} className="p-4 hover:bg-yellow-500 text-black rounded-full w-12 h-12 flex justify-center items-center text-xl font-bold">
+                        <AiOutlinePlus />
+                    </button>
                 </div>
             </div>
-            <button type="submit" className="p-4 bg-black text-white rounded-lg">Post</button>
+            <button type="submit" className="p-4 bg-black hover:bg-yellow-500 text-white hover:text-black rounded-lg">Post</button>
         </form>
     )
 }
