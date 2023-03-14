@@ -18,7 +18,6 @@ export const ApplicationContextProvider = ({ children }) => {
     const [post, setPost] = useState()
     const [postId, setPostId] = useState()
     const [posts, setPosts] = useState([])
-    const [success, setSuccess] = useState(false)
     const [error, setError] = useState(false)
     const [loading, setLoading] = useState(false)
     
@@ -61,7 +60,6 @@ export const ApplicationContextProvider = ({ children }) => {
         try {
             setError(false)
             setLoading(true)
-            setSuccess(false)
             const response = await fetch('http://localhost:3500/posts', {
                 method: 'POST',
                 headers: {
@@ -70,9 +68,8 @@ export const ApplicationContextProvider = ({ children }) => {
                 body: JSON.stringify(data)
             })
             if(!response.ok) throw new Error(`FetchError: ${response.status}`)
-            const post = await response.json()
-            setPostId(post.post._id)
-            setSuccess(true)
+            const json = await response.json()
+            return json.post
         } catch (err) {
             console.error(err)
             setError(true)
@@ -102,8 +99,7 @@ export const ApplicationContextProvider = ({ children }) => {
             posts,
             loading,
             error,
-            setError,
-            success
+            setError            
         }}>
             {children}
         </ApplicationContext.Provider>

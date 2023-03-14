@@ -11,20 +11,11 @@ const PostCreate = () => {
     const [tag, setTag] = useState('')
     const [tags, setTags] = useState([])
     const [authorId, setAuthorId] = useState("6407970a85841dc03653c00c")
+    const [postId, setPostId] = useState()
 
     const navigate = useNavigate()
 
-    const { createPost, postId, loading, error, success } = useApplicationContext()
-
-    // useEffect(() => {
-    //     if (success) {
-    //         setTitle('')
-    //         setThumbnail('')
-    //         setBody('')
-    //         setTags([])
-    //         navigate(`/posts/${postId}`)
-    //     }
-    // }, [success, navigate])
+    const { createPost, loading, error, success } = useApplicationContext()
 
     const handleTitleChange = e => setTitle(e.target.value)
     const handleThumbnailChange = e => setThumbnail(e.target.value)
@@ -48,15 +39,22 @@ const PostCreate = () => {
     const handleSubmitPost = async (e) => {
         e.preventDefault()
         if (canSave) {
-            await createPost({
+            const post = await createPost({
                 title,
                 thumbnail,
                 body,
                 tags,
                 authorId
             })
+            setPostId(post._id)
         }
     }
+
+    useEffect(() => {
+        if (postId) {
+            navigate(`/posts/${postId}`)
+        }
+    }, [postId, navigate])
     
     return (
         <form onSubmit={handleSubmitPost} className="flex flex-col gap-4 max-w-3xl bg-red-900/50 p-4 rounded-lg text-black">
