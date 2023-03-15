@@ -17,7 +17,6 @@ export const ApplicationContextProvider = ({ children }) => {
     const [loading, setLoading] = useState()
     
     const getPosts = async () => {
-        console.log('Getting posts')
         try {
             setError(false)
             setLoading(true)
@@ -93,12 +92,35 @@ export const ApplicationContextProvider = ({ children }) => {
         }
     }
 
+    const deletePost = async (id) => {
+        try {
+            setError(false)
+            setLoading(true)
+            const response = await fetch('http://localhost:3500/posts', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(id)
+            })
+            if(!response.ok) throw new Error(`FetchError: ${response.status}`)
+            const data = await response.json()
+            return data.deleted
+        } catch (err) {
+            console.error(err)
+            setError(true)
+        } finally {
+            setLoading(false)
+        }
+    }
+
     return (
         <ApplicationContext.Provider value={{
             getPost,
             getPosts,
             createPost,
             updatePost,
+            deletePost,
             loading,
             error,
             setError           

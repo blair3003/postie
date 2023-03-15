@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AiOutlinePlus, AiOutlineClose } from 'react-icons/ai'
+import { AiOutlinePlus, AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { useApplicationContext } from '../../app/store'
 
 const PostCreate = () => {
@@ -99,13 +99,13 @@ const PostCreate = () => {
                         value={tag}
                         onChange={handleTagChange}
                     />
-                    <button type="button" onClick={handleAddTag} className="p-4 hover:bg-yellow-500 text-black rounded-full w-12 h-12 flex justify-center items-center text-xl font-bold">
+                    <button type="button" disabled={loading} onClick={handleAddTag} className="p-4 hover:bg-yellow-500 text-black rounded-full w-12 h-12 flex justify-center items-center text-xl font-bold">
                         <AiOutlinePlus />
                     </button>
                 </div>
             </div>
-            <button type="submit" className="p-4 bg-black hover:bg-yellow-500 text-white hover:text-black rounded-lg">
-                {loading ? "Posting..." : "Post"}
+            <button type="submit" disabled={loading} className="p-4 bg-black hover:bg-yellow-500 text-white hover:text-black rounded-lg">
+                {loading ? <AiOutlineLoading3Quarters className="mx-auto" /> : "Post"}
             </button>
         </form>
     )

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { AiOutlinePlus, AiOutlineClose } from 'react-icons/ai'
+import { AiOutlinePlus, AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { useApplicationContext } from '../../app/store'
 
 const PostEdit = () => {
@@ -18,7 +18,7 @@ const PostEdit = () => {
 
     const navigate = useNavigate()
 
-    const { getPost, updatePost, loading, error, setError } = useApplicationContext()
+    const { getPost, updatePost, deletePost, loading, error, setError } = useApplicationContext()
 
     const valid = [id, title, body, authorId].every(Boolean)
 
@@ -37,6 +37,17 @@ const PostEdit = () => {
 
     const handleRemoveTag = e => {
         setTags(tags => tags.filter(tag => tag !== e.target.textContent))
+    }
+
+    const handleDeletePost = async (e) => {
+        e.preventDefault()
+        if (confirm('Please confirm you would like to delete this post.')) {
+            console.log(`Deleting`)
+            const deleted = await deletePost({id})
+            if (deleted && !error) {
+                navigate('/posts')
+            }   
+        }
     }
 
     const handleUpdatePost = async (e) => {
@@ -128,13 +139,16 @@ const PostEdit = () => {
                         value={tag}
                         onChange={handleTagChange}
                     />
-                    <button type="button" onClick={handleAddTag} className="p-4 hover:bg-yellow-500 text-black rounded-full w-12 h-12 flex justify-center items-center text-xl font-bold">
+                    <button type="button" onClick={handleAddTag} disabled={loading} className="p-4 hover:bg-yellow-500 text-black rounded-full w-12 h-12 flex justify-center items-center text-xl font-bold">
                         <AiOutlinePlus />
                     </button>
                 </div>
             </div>
-            <button type="submit" className="p-4 bg-black hover:bg-yellow-500 text-white hover:text-black rounded-lg">
-                {loading ? "Updating..." : "Update"}
+            <button type="submit" disabled={loading} className="p-4 bg-black hover:bg-yellow-500 text-white hover:text-black rounded-lg leading-none">
+                {loading ? <AiOutlineLoading3Quarters className="mx-auto" /> : "Update"}
+            </button>
+            <button type="button" disabled={loading} onClick={handleDeletePost} className="p-4 bg-gray-500 hover:bg-yellow-500 text-black hover:text-black rounded-lg leading-none">
+                {loading ? <AiOutlineLoading3Quarters className="mx-auto" /> : "Delete"}
             </button>
         </form>
     )
