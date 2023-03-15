@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import parse from 'html-react-parser'
 import { useApplicationContext } from '../../app/store'
@@ -7,17 +7,28 @@ const Post = () => {
 
     const { id } = useParams()
     const navigate = useNavigate()
+    const [post, setPost] = useState()
 
-    const { post, setPostId, loading, error, setError } = useApplicationContext()
+    const ready = useRef(true)
+
+    const { getPost, loading, error, setError } = useApplicationContext()
+
+    const handleGetPost = async () => {
+        const data = await getPost(id)
+        if (data) setPost(data)
+    }
 
     useEffect(() => {
-        setPostId(id)
-    }, [id])
-    
+        if (ready.current) {
+            handleGetPost()
+            return () => ready.current = false
+        }
+    }, [])
+
     useEffect(() => {
         if (error) {
             setError(false)
-            navigate('/')
+            navigate('/404')
         }
     }, [error])
 

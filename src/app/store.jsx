@@ -1,36 +1,30 @@
 import {
     createContext,
     useContext,
-    useEffect,
     useState,
-    useRef
 } from 'react'
 
 const ApplicationContext = createContext({
-    posts: [],
+    error: false,
     loading: false
 })
 
 export const useApplicationContext = () => useContext(ApplicationContext)
 
 export const ApplicationContextProvider = ({ children }) => {
+
+    const [error, setError] = useState()
+    const [loading, setLoading] = useState()
     
-    const [post, setPost] = useState()
-    const [postId, setPostId] = useState()
-    const [posts, setPosts] = useState([])
-    const [error, setError] = useState(false)
-    const [loading, setLoading] = useState(false)
-    
-    const ready = useRef(true)
-    
-    const fetchPosts = async () => {
+    const getPosts = async () => {
+        console.log('Getting posts')
         try {
             setError(false)
             setLoading(true)
             const response = await fetch(`http://localhost:3500/posts`)
             if(!response.ok) throw new Error(`FetchError: ${response.status}`)
             const data = await response.json()
-            setPosts(data)
+            return data
         } catch (err) {
             console.error(err)
             setError(true)
@@ -39,15 +33,15 @@ export const ApplicationContextProvider = ({ children }) => {
         }        
     }
 
-    const fetchPost = async (id) => {
+    const getPost = async (id) => {
+        console.log('Getting post')
         try {
-            console.log(`Fetchin gpost ${id}`)
             setError(false)
             setLoading(true)
             const response = await fetch(`http://localhost:3500/posts/${id}`)
             if(!response.ok) throw new Error(`FetchError: ${response.status}`)
             const data = await response.json()
-            setPost(data)
+            return data
         } catch (err) {
             console.error(err)
             setError(true)
@@ -56,7 +50,7 @@ export const ApplicationContextProvider = ({ children }) => {
         }        
     }
 
-    const createPost = async (data) => {
+    const createPost = async (post) => {
         try {
             setError(false)
             setLoading(true)
@@ -65,11 +59,11 @@ export const ApplicationContextProvider = ({ children }) => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify(post)
             })
             if(!response.ok) throw new Error(`FetchError: ${response.status}`)
-            const json = await response.json()
-            return json.post
+            const data = await response.json()
+            return data.post
         } catch (err) {
             console.error(err)
             setError(true)
@@ -78,28 +72,15 @@ export const ApplicationContextProvider = ({ children }) => {
         }
 
     }
-    
-    useEffect(() => {
-        if (ready.current) {
-            console.log('Ready')
-            fetchPosts()
-            return () => ready.current = false
-        }
-    }, [])
-
-    useEffect(() => {
-        if(postId) fetchPost(postId)
-    }, [postId])
 
     return (
         <ApplicationContext.Provider value={{
-            post,
-            setPostId,
+            getPost,
+            getPosts,
             createPost,
-            posts,
             loading,
             error,
-            setError            
+            setError           
         }}>
             {children}
         </ApplicationContext.Provider>

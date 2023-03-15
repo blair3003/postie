@@ -11,18 +11,17 @@ const PostCreate = () => {
     const [tag, setTag] = useState('')
     const [tags, setTags] = useState([])
     const [authorId, setAuthorId] = useState("6407970a85841dc03653c00c")
-    const [postId, setPostId] = useState()
 
     const navigate = useNavigate()
 
-    const { createPost, loading, error, success } = useApplicationContext()
+    const { createPost, loading, error } = useApplicationContext()
+
+    const valid = [title, body, authorId].every(Boolean)
 
     const handleTitleChange = e => setTitle(e.target.value)
     const handleThumbnailChange = e => setThumbnail(e.target.value)
     const handleBodyChange = e => setBody(e.target.value)
     const handleTagChange = e => setTag(e.target.value)
-
-    const canSave = [title, body, authorId].every(Boolean)
 
     const handleAddTag = e => {
         e.preventDefault()
@@ -38,23 +37,18 @@ const PostCreate = () => {
 
     const handleSubmitPost = async (e) => {
         e.preventDefault()
-        if (canSave) {
-            const post = await createPost({
-                title,
-                thumbnail,
-                body,
-                tags,
-                authorId
-            })
-            setPostId(post._id)
-        }
+        if (!valid) return
+        const post = await createPost({
+            title,
+            thumbnail,
+            body,
+            tags,
+            authorId
+        })
+        if (post && !error) {
+            navigate(`/posts/${post._id}`)
+        }        
     }
-
-    useEffect(() => {
-        if (postId) {
-            navigate(`/posts/${postId}`)
-        }
-    }, [postId, navigate])
     
     return (
         <form onSubmit={handleSubmitPost} className="flex flex-col gap-4 max-w-3xl bg-red-900/50 p-4 rounded-lg text-black">
@@ -110,7 +104,9 @@ const PostCreate = () => {
                     </button>
                 </div>
             </div>
-            <button type="submit" className="p-4 bg-black hover:bg-yellow-500 text-white hover:text-black rounded-lg">Post</button>
+            <button type="submit" className="p-4 bg-black hover:bg-yellow-500 text-white hover:text-black rounded-lg">
+                {loading ? "Posting..." : "Post"}
+            </button>
         </form>
     )
 }

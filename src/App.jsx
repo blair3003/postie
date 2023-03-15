@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { ApplicationContextProvider } from './app/store'
 import Layout from './layouts/Layout'
+import Missing from './layouts/Missing'
 import Feed from './features/Feed'
 import Post from './features/posts/Post'
 import PostCreate from './features/posts/PostCreate'
@@ -19,6 +20,9 @@ function App() {
                         {/* <Route path="edit/:id" element={<PostEdit />} /> */}
                         <Route path=":id" element={<Post />} />
                     </Route>
+
+                    <Route path="404" element={<Missing />} />
+                    <Route path="*" element={<Navigate replace to="/404" />} />
 
                 </Route>
             </Routes>
