@@ -34,7 +34,6 @@ export const ApplicationContextProvider = ({ children }) => {
     }
 
     const getPost = async (id) => {
-        console.log('Getting post')
         try {
             setError(false)
             setLoading(true)
@@ -70,7 +69,28 @@ export const ApplicationContextProvider = ({ children }) => {
         } finally {
             setLoading(false)
         }
+    }
 
+    const updatePost = async (post) => {
+        try {
+            setError(false)
+            setLoading(true)
+            const response = await fetch('http://localhost:3500/posts', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(post)
+            })
+            if(!response.ok) throw new Error(`FetchError: ${response.status}`)
+            const data = await response.json()
+            return data.updated
+        } catch (err) {
+            console.error(err)
+            setError(true)
+        } finally {
+            setLoading(false)
+        }
     }
 
     return (
@@ -78,6 +98,7 @@ export const ApplicationContextProvider = ({ children }) => {
             getPost,
             getPosts,
             createPost,
+            updatePost,
             loading,
             error,
             setError           

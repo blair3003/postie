@@ -5,6 +5,7 @@ import Missing from './layouts/Missing'
 import Feed from './features/Feed'
 import Post from './features/posts/Post'
 import PostCreate from './features/posts/PostCreate'
+import PostEdit from './features/posts/PostEdit'
 
 function App() {
     return (
@@ -17,8 +18,10 @@ function App() {
                     <Route path="posts">
                         <Route index element={<Navigate replace to="/" />} />
                         <Route path="create" element={<PostCreate />} />
-                        {/* <Route path="edit/:id" element={<PostEdit />} /> */}
-                        <Route path=":id" element={<Post />} />
+                        <Route path=":id">
+                            <Route index element={<Post />} />
+                            <Route path="edit" element={<PostEdit />} />
+                        </Route>
                     </Route>
 
                     <Route path="404" element={<Missing />} />
