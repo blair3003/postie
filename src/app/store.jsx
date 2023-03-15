@@ -1,7 +1,7 @@
 import {
     createContext,
     useContext,
-    useState,
+    useState
 } from 'react'
 
 const ApplicationContext = createContext({
@@ -123,7 +123,7 @@ export const ApplicationContextProvider = ({ children }) => {
             deletePost,
             loading,
             error,
-            setError           
+            setError        
         }}>
             {children}
         </ApplicationContext.Provider>
