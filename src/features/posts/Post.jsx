@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { AiFillEdit } from 'react-icons/ai'
 import parse from 'html-react-parser'
 import { useApplicationContext } from '../../app/store'
 
@@ -12,6 +13,8 @@ const Post = () => {
     const ready = useRef(true)
 
     const { getPost, loading, error, setError } = useApplicationContext()
+
+    const handleEditPost = () => navigate(`/posts/${id}/edit`)
 
     const handleGetPost = async () => {
         const data = await getPost(id)
@@ -50,7 +53,10 @@ const Post = () => {
                 </div>
             </div>
             <div className="flex gap-2">{post.tags && post.tags.map(tag => <div key={tag} className="px-3 pb-1 bg-yellow-500 text-black rounded-full">{tag}</div>)}</div>  
-            <div>{parse(post.body)}</div>  
+            <div>{parse(post.body)}</div>
+            <button onClick={handleEditPost} className="">
+                <AiFillEdit />
+            </button>
         </article>
         : null
     )
