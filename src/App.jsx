@@ -6,6 +6,7 @@ import Feed from './features/Feed'
 import Post from './features/posts/Post'
 import PostCreate from './features/posts/PostCreate'
 import PostEdit from './features/posts/PostEdit'
+import Register from './features/auth/Register'
 
 function App() {
     return (
@@ -23,6 +24,8 @@ function App() {
                             <Route path="edit" element={<PostEdit />} />
                         </Route>
                     </Route>
+
+                    <Route path="register" element={<Register />} />
 
                     <Route path="404" element={<Missing />} />
                     <Route path="*" element={<Navigate replace to="/404" />} />
