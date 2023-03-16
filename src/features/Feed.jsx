@@ -24,7 +24,7 @@ const Feed = () => {
 
     return (
         <section id="feed">
-            <h2 className="offscreen">Feed</h2>
+            <h1 className="offscreen">Feed</h1>
             <div className="auto-grid">
                 {loading ? <p>Loading...</p> :
                 error ? <p>Error loading posts!</p> : 
