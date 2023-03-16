@@ -19,3 +19,13 @@
     gap: 1rem;
     grid-template-columns: repeat(auto-fit, minmax(min(var(--min-column-size), 100%), 1fr));
 }
+
+.menu-appear {
+    transform-origin: top;
+    animation: 0.3s 1 normal appear;
+}
+
+@keyframes appear {
+    0% { transform: scaleY(0); }
+    100% { transform: scaleY(1); }
+}
