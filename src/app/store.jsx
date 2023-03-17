@@ -13,8 +13,8 @@ export const useApplicationContext = () => useContext(ApplicationContext)
 
 export const ApplicationContextProvider = ({ children }) => {
 
-    const [error, setError] = useState()
-    const [loading, setLoading] = useState()
+    const [error, setError] = useState(false)
+    const [loading, setLoading] = useState(false)
     
     const getPosts = async () => {
         try {
