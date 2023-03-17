@@ -2,8 +2,8 @@ const Nav = ({ className }) => {
 
     return (
         <nav className={className}>
-            <a href="#">Login</a>
-            <a href="/register">Register</a>
+            <a href="#" className="hover:text-white">Login</a>
+            <a href="/register" className="hover:text-white">Register</a>
         </nav>
     )
 }

@@ -104,7 +104,7 @@ const PostCreate = () => {
                     </button>
                 </div>
             </div>
-            <button type="submit" disabled={loading} className="p-4 bg-black hover:bg-yellow-500 text-white hover:text-black rounded-lg">
+            <button type="submit" disabled={loading} className="p-4 bg-black hover:bg-yellow-500 text-white hover:text-black rounded-lg leading-none">
                 {loading ? <AiOutlineLoading3Quarters className="mx-auto" /> : "Post"}
             </button>
         </form>
