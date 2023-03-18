@@ -8,6 +8,7 @@ import PostCreate from './features/posts/PostCreate'
 import PostEdit from './features/posts/PostEdit'
 import Login from './features/auth/Login'
 import Register from './features/auth/Register'
+import Auth from './features/auth/Auth'
 
 function App() {
     return (
@@ -19,10 +20,14 @@ function App() {
 
                     <Route path="posts">
                         <Route index element={<Navigate replace to="/" />} />
-                        <Route path="create" element={<PostCreate />} />
+                        <Route element={<Auth roles={['admin', 'author']}/>}>
+                            <Route path="create" element={<PostCreate />} />
+                        </Route>
                         <Route path=":id">
                             <Route index element={<Post />} />
-                            <Route path="edit" element={<PostEdit />} />
+                            <Route element={<Auth roles={['admin', 'author']} />}>
+                                <Route path="edit" element={<PostEdit />} />
+                            </Route>
                         </Route>
                     </Route>
 

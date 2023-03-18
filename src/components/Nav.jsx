@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
 
 const Nav = ({ className }) => {
@@ -8,12 +9,13 @@ const Nav = ({ className }) => {
         user.id ?
         
         <nav className={className}>
-            <a href="#" className="hover:text-white">Logout</a>
+            <Link to="#" className="hover:text-white">Logout</Link>
+            <Link to="/posts/create" className="hover:text-white">Create</Link>
         </nav> :
         
         <nav className={className}>
-            <a href="/login" className="hover:text-white">Login</a>
-            <a href="/register" className="hover:text-white">Register</a>
+            <Link to="/login" className="hover:text-white">Login</Link>
+            <Link to="/register" className="hover:text-white">Register</Link>
         </nav>
     )
 }
