@@ -41,8 +41,12 @@ const Register = () => {
             password
         })
         if (user && !error) {
+            setName('')
+            setEmail('')
+            setPassword('')
+            setMatch('')
             // navigate(`/users/${user._id}`)
-            console.log(`Registered user! - ${user.name}`)
+            console.log(`Registered user - ${user.name}`)
         }        
     }
 

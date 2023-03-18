@@ -138,18 +138,43 @@ export const ApplicationContextProvider = ({ children }) => {
         }
     }
 
+    const loginUser = async (user) => {
+        try {
+            setError(false)
+            setLoading(true)
+            const response = await fetch('http://localhost:3500/auth', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(user)
+            })
+            if(!response.ok) throw new Error(`FetchError: ${response.status}`)
+            const data = await response.json()
+            return data.accessToken
+        } catch (err) {
+            console.error(err)
+            setError(true)
+        } finally {
+            setLoading(false)
+        }
+
+    }
+
     return (
         <ApplicationContext.Provider value={{
-            token,
             getPost,
             getPosts,
             createPost,
             updatePost,
             deletePost,
             registerUser,
+            loginUser,
             loading,
             error,
-            setError        
+            setError,
+            token,     
+            setToken,
         }}>
             {children}
         </ApplicationContext.Provider>
