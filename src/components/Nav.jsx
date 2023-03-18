@@ -1,21 +1,22 @@
-import { Link } from 'react-router-dom'
+import { useLocation, NavLink } from 'react-router-dom'
 import useAuth from '../hooks/useAuth'
 
 const Nav = ({ className }) => {
 
     const user = useAuth()
+    const location = useLocation()
 
     return (
         user.id ?
         
         <nav className={className}>
-            <Link to="#" className="hover:text-white">Logout</Link>
-            <Link to="/posts/create" className="hover:text-white">Create</Link>
+            <NavLink to="#">Logout</NavLink>
+            <NavLink to="/posts/create">Create</NavLink>
         </nav> :
         
         <nav className={className}>
-            <Link to="/login" className="hover:text-white">Login</Link>
-            <Link to="/register" className="hover:text-white">Register</Link>
+            <NavLink to="/login" state={{ from: location }}>Login</NavLink>
+            <NavLink to="/register">Register</NavLink>
         </nav>
     )
 }

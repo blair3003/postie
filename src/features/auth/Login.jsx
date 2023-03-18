@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { useApplicationContext } from '../../app/store'
 
@@ -12,6 +12,8 @@ const Login = () => {
 
     const emailRef = useRef()
     const errorRef = useRef()
+
+    const location = useLocation()
     const navigate = useNavigate()
 
     const handleLogin = async e => {
@@ -24,7 +26,7 @@ const Login = () => {
             setEmail('')
             setPassword('')
             setToken(accessToken)
-            navigate('/')
+            navigate(location.state.from.pathname, { replace: true })
         }
     }
 

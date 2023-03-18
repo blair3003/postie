@@ -8,7 +8,7 @@ import PostCreate from './features/posts/PostCreate'
 import PostEdit from './features/posts/PostEdit'
 import Login from './features/auth/Login'
 import Register from './features/auth/Register'
-import Auth from './features/auth/Auth'
+import Auth from './components/Auth'
 
 function App() {
     return (
@@ -19,7 +19,7 @@ function App() {
                     <Route index element={<Feed />} />
 
                     <Route path="posts">
-                        <Route index element={<Navigate replace to="/" />} />
+                        <Route index element={<Navigate to="/" replace/>} />
                         <Route element={<Auth roles={['admin', 'author']}/>}>
                             <Route path="create" element={<PostCreate />} />
                         </Route>
@@ -34,8 +34,7 @@ function App() {
                     <Route path="login" element={<Login />} />
                     <Route path="register" element={<Register />} />
 
-                    <Route path="404" element={<Missing />} />
-                    <Route path="*" element={<Navigate replace to="/404" />} />
+                    <Route path="*" element={<Missing />} />
 
                 </Route>
             </Routes>
