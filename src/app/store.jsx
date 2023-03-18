@@ -13,6 +13,8 @@ export const useApplicationContext = () => useContext(ApplicationContext)
 
 export const ApplicationContextProvider = ({ children }) => {
 
+    // const [token, setToken] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQwNzk3MGE4NTg0MWRjMDM2NTNjMDBjIiwibmFtZSI6IkJsYWlyIiwiZW1haWwiOiJibGFpckBmb3J0aGRldi5jb20iLCJyb2xlcyI6WyJhZG1pbiJdfSwiaWF0IjoxNjc5MTM2NzczLCJleHAiOjE2NzkxMzY4MDN9.bSXZpz0h6qrrdExtH099-2lIN4S-kzMkxlu15wNbh-g")
+    const [token, setToken] = useState(null)
     const [error, setError] = useState(false)
     const [loading, setLoading] = useState(false)
     
@@ -138,6 +140,7 @@ export const ApplicationContextProvider = ({ children }) => {
 
     return (
         <ApplicationContext.Provider value={{
+            token,
             getPost,
             getPosts,
             createPost,

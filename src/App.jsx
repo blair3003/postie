@@ -6,6 +6,7 @@ import Feed from './features/Feed'
 import Post from './features/posts/Post'
 import PostCreate from './features/posts/PostCreate'
 import PostEdit from './features/posts/PostEdit'
+import Login from './features/auth/Login'
 import Register from './features/auth/Register'
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
                         </Route>
                     </Route>
 
+                    <Route path="login" element={<Login />} />
                     <Route path="register" element={<Register />} />
 
                     <Route path="404" element={<Missing />} />
