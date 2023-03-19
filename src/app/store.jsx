@@ -57,7 +57,8 @@ export const ApplicationContextProvider = ({ children }) => {
             const response = await fetch('http://localhost:3500/posts', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(post)
             })
@@ -79,7 +80,8 @@ export const ApplicationContextProvider = ({ children }) => {
             const response = await fetch('http://localhost:3500/posts', {
                 method: 'PATCH',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(post)
             })
@@ -101,7 +103,8 @@ export const ApplicationContextProvider = ({ children }) => {
             const response = await fetch('http://localhost:3500/posts', {
                 method: 'DELETE',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(id)
             })
@@ -147,6 +150,7 @@ export const ApplicationContextProvider = ({ children }) => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
+                credentials: 'include',
                 body: JSON.stringify(user)
             })
             if(!response.ok) throw new Error(`FetchError: ${response.status}`)
@@ -158,7 +162,6 @@ export const ApplicationContextProvider = ({ children }) => {
         } finally {
             setLoading(false)
         }
-
     }
 
     return (

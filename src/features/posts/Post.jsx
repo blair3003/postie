@@ -28,13 +28,6 @@ const Post = () => {
         }
     }, [])
 
-    useEffect(() => {
-        if (error) {
-            setError(false)
-            navigate('/404')
-        }
-    }, [error])
-
     return (
         loading ? <p>Loading...</p> :
         post ?        

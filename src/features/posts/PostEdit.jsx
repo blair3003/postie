@@ -82,13 +82,6 @@ const PostEdit = () => {
             return () => ready.current = false
         }
     }, [])
-
-    useEffect(() => {
-        if (error) {
-            setError(false)
-            navigate('/404')
-        }
-    }, [error])
     
     return (
         <form onSubmit={handleUpdatePost} className="flex flex-col gap-4 max-w-3xl bg-red-900/50 p-4 rounded-lg text-black">
