@@ -13,11 +13,13 @@ export const useApplicationContext = () => useContext(ApplicationContext)
 
 export const ApplicationContextProvider = ({ children }) => {
 
-    const tokenRef = useRef()
+    const ready = useRef(true)
+    const tokenRef = useRef('')
 
     const [user, setUser] = useState(null)
     const [error, setError] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [persist, setPersist] = useState(JSON.parse(localStorage.getItem('persist')) || false)
     
     const getPosts = async () => {
         try {
@@ -192,12 +194,13 @@ export const ApplicationContextProvider = ({ children }) => {
             setError(true)
         } finally {
             tokenRef.current = ''
+            setPersist(false)
             setLoading(false)           
         }        
     }
 
     const refreshToken = async () => {
-        console.log('Attempting to refresh access token')
+        console.log(`Making refresh fetch call`)
         try {
             const response = await fetch('http://localhost:3500/auth/refresh', {
                 credentials: 'include',
@@ -207,9 +210,26 @@ export const ApplicationContextProvider = ({ children }) => {
             return data.accessToken
         } catch (err) {
             tokenRef.current = ''
+            setPersist(false)
             console.error(err)
         }
     }
+
+    const handlePersist = async () => {
+        const token = await refreshToken()
+        if (token) tokenRef.current = token
+    }
+
+    useEffect(() => {
+        if (ready.current) {
+            if (persist) handlePersist()
+            return () => ready.current = false
+        }
+    }, [])
+
+    useEffect(() => {
+        localStorage.setItem('persist', JSON.stringify(persist))
+    }, [persist])
 
     useEffect(() => {
         if (tokenRef.current) {
@@ -238,7 +258,10 @@ export const ApplicationContextProvider = ({ children }) => {
             error,
             setError,
             tokenRef,
-            user
+            user,
+            refreshToken,
+            persist,
+            setPersist
         }}>
             {children}
         </ApplicationContext.Provider>

@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate, Link } from 'react-router-dom'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { useApplicationContext } from '../../app/store'
-import usePersist from '../../hooks/usePersist'
 
 const Login = () => {
 
-    const { loginUser, loading, error, setError } = useApplicationContext()
+    const { loginUser, loading, error, setError, persist, setPersist } = useApplicationContext()
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -16,7 +15,6 @@ const Login = () => {
 
     const location = useLocation()
     const navigate = useNavigate()
-    const [persist, setPersist] = usePersist()
 
     const handleLogin = async e => {
         e.preventDefault()
@@ -98,7 +96,7 @@ const Login = () => {
             </form>
 
             <p className="p-2 mt-2 text-white">Not registered? <br />
-            <a href="/register" className="underline font-bold">Register</a></p>
+            <Link to="/register" className="underline font-bold">Register</Link></p>
 
         </section>
     )

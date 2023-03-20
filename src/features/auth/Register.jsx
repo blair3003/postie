@@ -1,4 +1,5 @@
 import { useRef, useEffect, useState } from 'react'
+import { useLocation, useNavigate, Link } from 'react-router-dom'
 import { AiOutlineClose, AiOutlineCheck, AiOutlineLoading3Quarters, AiFillInfoCircle } from 'react-icons/ai'
 import { useApplicationContext } from '../../app/store'
 
@@ -8,6 +9,9 @@ const Register = () => {
 
     const nameRef = useRef()
     const errorRef = useRef()
+
+    const location = useLocation()
+    const navigate = useNavigate()
 
     const [name, setName] = useState('')
     const [nameValid, setNameValid] = useState(false)
@@ -184,7 +188,7 @@ const Register = () => {
             </form>
 
             <p className="p-2 mt-2 text-white">Already registered? <br />
-            <a href="/login" className="underline font-bold">Log in</a></p>
+            <Link to="/login" className="underline font-bold">Log in</Link></p>
 
         </section>
     )
