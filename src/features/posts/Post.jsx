@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { AiFillEdit } from 'react-icons/ai'
 import parse from 'html-react-parser'
 import { useApplicationContext } from '../../app/store'
+import Comments from '../../components/Comments'
 
 const Post = () => {
 
@@ -29,27 +30,35 @@ const Post = () => {
     }, [])
 
     return (
-        loading ? <p>Loading...</p> :
+        loading ? null :
         post ?        
-        <article className="">
-            <div className="bg-white p-4 rounded-lg">
-                <img className="w-full" src={post.thumbnail ? post.thumbnail : '/img/default-thumbnail.png'} alt={post.title} />
-            </div>
+        <article className="max-w-xl mx-auto bg-red-900/50 text-sky-200 sm:rounded-lg mb-8">
             <div className="flex gap-4 p-4">
                 <div className="w-12">
                     <img className="rounded-full drop-shadow" src={post.author.pic ? post.author.pic : '/img/default-pic.png'} alt={post.author.name} />
                 </div>
-                <div>
-                    <h3 className="text-lg font-bold">{post.title}</h3>
-                    <p>{post.author.name}</p>
+                <div className="grow">
+                    <p className="font-bold">{post.author.name}</p>
                     <p>{post.createdAt}</p>
                 </div>
+                <button onClick={handleEditPost} className="text-3xl hover:text-white">
+                    <AiFillEdit />
+                </button>
             </div>
-            <div className="flex gap-2">{post.tags && post.tags.map(tag => <div key={tag} className="px-3 pb-1 bg-yellow-500 text-black rounded-full">{tag}</div>)}</div>  
-            <div>{parse(post.body)}</div>
-            <button onClick={handleEditPost} className="">
-                <AiFillEdit />
-            </button>
+            <h1 className="text-2xl px-4 font-bold">{post.title}</h1>
+            <div className="flex gap-2 p-4">
+            {post.tags && post.tags.map(tag =>
+                <div key={tag} className="px-3 pb-1 bg-yellow-500 text-black rounded-full text-sm font-semibold">{tag}</div>
+            )}
+            </div>  
+            <div className="">
+                <img className="w-full" src={post.thumbnail ? post.thumbnail : '/img/default-thumbnail.png'} alt={post.title} />
+            </div>
+            <div className="p-4">{parse(post.body)}</div>
+            <section className="p-4">
+                <h2>Comments</h2>
+                <Comments comments={post.comments}/>
+            </section>
         </article>
         : null
     )
