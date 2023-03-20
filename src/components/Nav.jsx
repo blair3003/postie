@@ -1,13 +1,13 @@
 import { useLocation, NavLink } from 'react-router-dom'
-import useAuth from '../hooks/useAuth'
+import { useApplicationContext } from '../app/store'
 
 const Nav = ({ className }) => {
 
-    const user = useAuth()
+    const { user } = useApplicationContext()
     const location = useLocation()
 
     return (
-        user.id ?
+        user ?
         
         <nav className={className}>
             <NavLink to="#">Logout</NavLink>

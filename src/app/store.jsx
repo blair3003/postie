@@ -1,20 +1,21 @@
 import {
     createContext,
     useContext,
+    useEffect,
+    useRef,
     useState
 } from 'react'
+import jwtDecode from 'jwt-decode'
 
-const ApplicationContext = createContext({
-    error: false,
-    loading: false
-})
+const ApplicationContext = createContext()
 
 export const useApplicationContext = () => useContext(ApplicationContext)
 
 export const ApplicationContextProvider = ({ children }) => {
 
-    // const [token, setToken] = useState("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjQwNzk3MGE4NTg0MWRjMDM2NTNjMDBjIiwibmFtZSI6IkJsYWlyIiwiZW1haWwiOiJibGFpckBmb3J0aGRldi5jb20iLCJyb2xlcyI6WyJhZG1pbiJdfSwiaWF0IjoxNjc5MTM2NzczLCJleHAiOjE2NzkxMzY4MDN9.bSXZpz0h6qrrdExtH099-2lIN4S-kzMkxlu15wNbh-g")
-    const [token, setToken] = useState(null)
+    const tokenRef = useRef()
+
+    const [user, setUser] = useState(null)
     const [error, setError] = useState(false)
     const [loading, setLoading] = useState(false)
     
@@ -58,7 +59,7 @@ export const ApplicationContextProvider = ({ children }) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${tokenRef.current}`
                 },
                 body: JSON.stringify(post)
             })
@@ -81,11 +82,16 @@ export const ApplicationContextProvider = ({ children }) => {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${tokenRef.current}`
                 },
                 body: JSON.stringify(post)
             })
-            if(!response.ok) throw new Error(`FetchError: ${response.status}`)
+            if (response.status === 403) {
+                const newToken = await refreshToken()
+                if (!newToken) throw new Error(`RefreshError: ${response.status}`)
+                tokenRef.current = newToken
+                return updatePost(post)
+            } else if (!response.ok) throw new Error(`FetchError: ${response.status}`)
             const data = await response.json()
             return data.updated
         } catch (err) {
@@ -104,11 +110,16 @@ export const ApplicationContextProvider = ({ children }) => {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${tokenRef.current}`
                 },
                 body: JSON.stringify(id)
             })
-            if(!response.ok) throw new Error(`FetchError: ${response.status}`)
+            if (response.status === 403) {
+                const newToken = await refreshToken()
+                if (!newToken) throw new Error(`RefreshError: ${response.status}`)
+                tokenRef.current = newToken
+                return updatePost(post)
+            } else if (!response.ok) throw new Error(`FetchError: ${response.status}`)
             const data = await response.json()
             return data.deleted
         } catch (err) {
@@ -155,6 +166,7 @@ export const ApplicationContextProvider = ({ children }) => {
             })
             if(!response.ok) throw new Error(`FetchError: ${response.status}`)
             const data = await response.json()
+            tokenRef.current = data.accessToken
             return data.accessToken
         } catch (err) {
             console.error(err)
@@ -163,6 +175,34 @@ export const ApplicationContextProvider = ({ children }) => {
             setLoading(false)
         }
     }
+
+    const refreshToken = async () => {
+        console.log('Attempting to refresh access token')
+        try {
+            const response = await fetch('http://localhost:3500/auth/refresh', {
+                credentials: 'include',
+            })
+            if(!response.ok) throw new Error(`FetchError: ${response.status}`)
+            const data = await response.json()
+            return data.accessToken
+        } catch (err) {
+            tokenRef.current = ''
+            console.error(err)
+        }
+    }
+
+    useEffect(() => {
+        if (tokenRef.current) {
+            const { id, name, email, pic, roles } = jwtDecode(tokenRef.current).user
+            setUser({
+                id,
+                name,
+                email,
+                pic,
+                roles
+            })
+        } else setUser(null)
+    }, [tokenRef.current])
 
     return (
         <ApplicationContext.Provider value={{
@@ -176,8 +216,8 @@ export const ApplicationContextProvider = ({ children }) => {
             loading,
             error,
             setError,
-            token,     
-            setToken,
+            tokenRef,
+            user
         }}>
             {children}
         </ApplicationContext.Provider>

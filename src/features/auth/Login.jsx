@@ -5,7 +5,7 @@ import { useApplicationContext } from '../../app/store'
 
 const Login = () => {
 
-    const { loginUser, loading, error, setError, setToken } = useApplicationContext()
+    const { loginUser, loading, error, setError } = useApplicationContext()
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -25,7 +25,6 @@ const Login = () => {
         if (accessToken && !error) {
             setEmail('')
             setPassword('')
-            setToken(accessToken)
             navigate(location.state.from.pathname, { replace: true })
         }
     }
