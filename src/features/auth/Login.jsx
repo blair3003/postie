@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { useApplicationContext } from '../../app/store'
+import usePersist from '../../hooks/usePersist'
 
 const Login = () => {
 
@@ -15,6 +16,7 @@ const Login = () => {
 
     const location = useLocation()
     const navigate = useNavigate()
+    const [persist, setPersist] = usePersist()
 
     const handleLogin = async e => {
         e.preventDefault()
@@ -81,6 +83,18 @@ const Login = () => {
                 >
                     {loading ? <AiOutlineLoading3Quarters className="mx-auto" /> : 'Log in'}
                 </button>
+
+                <label htmlFor="persist" className="flex items-center gap-2 cursor-pointer">
+                    <input
+                        type="checkbox"
+                        className="w-6 h-6"
+                        id="persist"
+                        checked={persist}
+                        onChange={() => setPersist(prev => !prev)}
+                    />
+                    Remember me
+                </label>
+
             </form>
 
             <p className="p-2 mt-2 text-white">Not registered? <br />

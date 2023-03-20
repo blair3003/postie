@@ -176,6 +176,26 @@ export const ApplicationContextProvider = ({ children }) => {
         }
     }
 
+    const logoutUser = async () => {
+        try {
+            setError(false)
+            setLoading(true)
+            const response = await fetch('http://localhost:3500/auth/logout', {
+                method: 'POST',
+                credentials: 'include',
+            })
+            if(!response.ok) throw new Error(`FetchError: ${response.status}`)
+            const data = await response.json()
+            return data
+        } catch (err) {
+            console.error(err)
+            setError(true)
+        } finally {
+            tokenRef.current = ''
+            setLoading(false)           
+        }        
+    }
+
     const refreshToken = async () => {
         console.log('Attempting to refresh access token')
         try {
@@ -213,6 +233,7 @@ export const ApplicationContextProvider = ({ children }) => {
             deletePost,
             registerUser,
             loginUser,
+            logoutUser,
             loading,
             error,
             setError,

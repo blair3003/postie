@@ -7,6 +7,7 @@ import Post from './features/posts/Post'
 import PostCreate from './features/posts/PostCreate'
 import PostEdit from './features/posts/PostEdit'
 import Login from './features/auth/Login'
+import Logout from './features/auth/Logout'
 import Register from './features/auth/Register'
 import Auth from './components/Auth'
 
@@ -32,6 +33,7 @@ function App() {
                     </Route>
 
                     <Route path="login" element={<Login />} />
+                    <Route path="logout" element={<Logout />} />
                     <Route path="register" element={<Register />} />
 
                     <Route path="*" element={<Missing />} />
