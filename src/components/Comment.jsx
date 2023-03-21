@@ -1,8 +1,6 @@
-const Comment = ({ comment }) => {
+const Comment = ({ comment, depth }) => {
 
-    return (
-        <li>{comment ? comment.body : null}</li>
-    )
+    return `${comment.body}, depth: ${depth}`
 }
 
 export default Comment
