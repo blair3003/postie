@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { AiFillEdit } from 'react-icons/ai'
 import parse from 'html-react-parser'
+import { format } from 'date-fns'
 import { useApplicationContext } from '../../app/store'
 import Comments from '../../components/Comments'
 
@@ -39,7 +40,7 @@ const Post = () => {
                 </div>
                 <div className="grow">
                     <p className="font-bold">{post.author.name}</p>
-                    <p>{post.createdAt}</p>
+                    <p>{format(Date.parse(post.createdAt), 'MMMM do, yyyy')}</p>
                 </div>
                 <button onClick={handleEditPost} className="text-3xl hover:text-white">
                     <AiFillEdit />
@@ -56,7 +57,7 @@ const Post = () => {
             </div>
             <div className="p-4">{parse(post.body)}</div>
             <section className="p-4">
-                <h2>Comments</h2>
+                <h2 className="offscreen">Comments</h2>
                 <Comments comments={post.comments}/>
             </section>
         </article>
