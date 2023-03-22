@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import CommentCreate from './CommentCreate'
+import { useApplicationContext } from '../app/store'
 
-const Comment = ({ comment, depth }) => {
+const Comment = ({ post, comment, depth }) => {
 
     const [toggle, setToggle] = useState(false)
+    const { user } = useApplicationContext()
 
     return (
         <div className="flex gap-2 pb-2">
@@ -19,10 +21,11 @@ const Comment = ({ comment, depth }) => {
                 <div className="pb-2">
                     <p>{comment.body}</p>
                 </div>
+                {user ?
                 <div className="flex items-center">
                     <button onClick={() => setToggle(prev => !prev)}className="text-sm hover:text-white">Reply</button>
-                </div>
-                {toggle ? <CommentCreate parent={comment} /> : null}
+                </div> : null}
+                {toggle && user ? <CommentCreate post={post} parent={comment} /> : null}
             </div>
         </div>
     )

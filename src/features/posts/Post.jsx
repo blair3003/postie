@@ -5,6 +5,7 @@ import parse from 'html-react-parser'
 import { format } from 'date-fns'
 import { useApplicationContext } from '../../app/store'
 import Comments from '../../components/Comments'
+import CommentCreate from '../../components/CommentCreate'
 
 const Post = () => {
 
@@ -14,7 +15,7 @@ const Post = () => {
 
     const ready = useRef(true)
 
-    const { getPost, loading, error, setError } = useApplicationContext()
+    const { getPost, loading, error, user } = useApplicationContext()
 
     const handleEditPost = () => navigate(`/posts/${id}/edit`)
 
@@ -42,9 +43,9 @@ const Post = () => {
                     <p className="font-bold">{post.author.name}</p>
                     <p>{format(Date.parse(post.createdAt), 'MMMM do, yyyy')}</p>
                 </div>
-                <button onClick={handleEditPost} className="text-3xl hover:text-white">
+                {user ? <button onClick={handleEditPost} className="text-3xl hover:text-white">
                     <AiFillEdit />
-                </button>
+                </button> : null}
             </div>
             <h1 className="text-2xl px-4 font-bold">{post.title}</h1>
             <div className="flex gap-2 p-4">
@@ -56,9 +57,10 @@ const Post = () => {
                 <img className="w-full" src={post.thumbnail ? post.thumbnail : '/img/default-thumbnail.png'} alt={post.title} />
             </div>
             <div className="p-4">{parse(post.body)}</div>
-            <section className="p-4">
+            <section className="p-4 flex flex-col gap-4">
                 <h2 className="offscreen">Comments</h2>
-                <Comments comments={post.comments}/>
+                {user ? <CommentCreate post={id}/> : null}
+                <Comments post={id} comments={post.comments}/>
             </section>
         </article>
         : null

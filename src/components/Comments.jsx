@@ -1,6 +1,6 @@
 import CommentList from './CommentList'
 
-const Comments = ({ comments }) => {
+const Comments = ({ post, comments }) => {
 
     // Sort comments, newest first
     comments.sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt))
@@ -20,7 +20,7 @@ const Comments = ({ comments }) => {
                     .filter(comment => !comment.parent)
                     .map(comment => recurse(comment))
 
-    return <CommentList comments={sorted} />
+    return <CommentList post={post} comments={sorted} />
 }
 
 export default Comments

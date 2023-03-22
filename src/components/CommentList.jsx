@@ -3,7 +3,7 @@ import { AiFillCaretDown, AiFillCaretUp } from 'react-icons/ai'
 
 import CommentListItem from './CommentListItem'
 
-const CommentList = ({ comments, depth = 0 }) => {
+const CommentList = ({ post, comments, depth = 0 }) => {
 
     const [toggle, setToggle] = useState(depth ? false : true) 
 
@@ -16,7 +16,7 @@ const CommentList = ({ comments, depth = 0 }) => {
         {toggle ?
         <ol className={depth ? "pl-10" : null}>
         {comments.map((comment, index) =>
-            <CommentListItem key={index} comment={comment} depth={depth} />
+            <CommentListItem key={index} post={post} comment={comment} depth={depth} />
         )}
         </ol> : null}
         </>

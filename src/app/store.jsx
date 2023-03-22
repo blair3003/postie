@@ -132,6 +132,29 @@ export const ApplicationContextProvider = ({ children }) => {
         }
     }
 
+    const createComment = async (comment) => {
+        try {
+            setError(false)
+            setLoading(true)
+            const response = await fetch('http://localhost:3500/posts/comments', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${tokenRef.current}`
+                },
+                body: JSON.stringify(comment)
+            })
+            if(!response.ok) throw new Error(`FetchError: ${response.status}`)
+            const data = await response.json()
+            return data.updated
+        } catch (err) {
+            console.error(err)
+            setError(true)
+        } finally {
+            setLoading(false)
+        }
+    }
+
     const registerUser = async (user) => {
         try {
             setError(false)
@@ -251,6 +274,7 @@ export const ApplicationContextProvider = ({ children }) => {
             createPost,
             updatePost,
             deletePost,
+            createComment,
             registerUser,
             loginUser,
             logoutUser,
