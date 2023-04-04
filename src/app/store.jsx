@@ -65,7 +65,10 @@ export const ApplicationContextProvider = ({ children }) => {
                 },
                 body: JSON.stringify(post)
             })
-            if(!response.ok) throw new Error(`FetchError: ${response.status}`)
+            if (response.status === 403) {
+                await handlePersist()
+                return createPost(post)
+            } else if (!response.ok) throw new Error(`FetchError: ${response.status}`)
             const data = await response.json()
             return data.post
         } catch (err) {
@@ -89,9 +92,7 @@ export const ApplicationContextProvider = ({ children }) => {
                 body: JSON.stringify(post)
             })
             if (response.status === 403) {
-                const newToken = await refreshToken()
-                if (!newToken) throw new Error(`RefreshError: ${response.status}`)
-                tokenRef.current = newToken
+                await handlePersist()
                 return updatePost(post)
             } else if (!response.ok) throw new Error(`FetchError: ${response.status}`)
             const data = await response.json()
@@ -117,10 +118,8 @@ export const ApplicationContextProvider = ({ children }) => {
                 body: JSON.stringify(id)
             })
             if (response.status === 403) {
-                const newToken = await refreshToken()
-                if (!newToken) throw new Error(`RefreshError: ${response.status}`)
-                tokenRef.current = newToken
-                return updatePost(post)
+                await handlePersist()
+                return deletePost(post)
             } else if (!response.ok) throw new Error(`FetchError: ${response.status}`)
             const data = await response.json()
             return data.deleted
@@ -191,7 +190,7 @@ export const ApplicationContextProvider = ({ children }) => {
             })
             if(!response.ok) throw new Error(`FetchError: ${response.status}`)
             const data = await response.json()
-            tokenRef.current = data.accessToken
+            updateToken(data.accessToken)
             return data.accessToken
         } catch (err) {
             console.error(err)
@@ -216,7 +215,7 @@ export const ApplicationContextProvider = ({ children }) => {
             console.error(err)
             setError(true)
         } finally {
-            tokenRef.current = ''
+            updateToken(null)
             setPersist(false)
             setLoading(false)           
         }        
@@ -232,29 +231,21 @@ export const ApplicationContextProvider = ({ children }) => {
             const data = await response.json()
             return data.accessToken
         } catch (err) {
-            tokenRef.current = ''
+            updateToken(null)
             setPersist(false)
             console.error(err)
         }
     }
 
     const handlePersist = async () => {
-        const token = await refreshToken()
-        if (token) tokenRef.current = token
+        if (persist) {
+            const newToken = await refreshToken()
+            if (newToken) updateToken(newToken)
+        }
     }
 
-    useEffect(() => {
-        if (ready.current) {
-            if (persist) handlePersist()
-            return () => ready.current = false
-        }
-    }, [])
-
-    useEffect(() => {
-        localStorage.setItem('persist', JSON.stringify(persist))
-    }, [persist])
-
-    useEffect(() => {
+    const updateToken = (token) => {
+        tokenRef.current = token
         if (tokenRef.current) {
             const { id, name, email, pic, roles } = jwtDecode(tokenRef.current).user
             setUser({
@@ -265,7 +256,18 @@ export const ApplicationContextProvider = ({ children }) => {
                 roles
             })
         } else setUser(null)
-    }, [tokenRef.current])
+    }
+
+    useEffect(() => {
+        if (ready.current) {
+            handlePersist()
+            return () => ready.current = false
+        }
+    }, [])
+
+    useEffect(() => {
+        localStorage.setItem('persist', JSON.stringify(persist))
+    }, [persist])
 
     return (
         <ApplicationContext.Provider value={{
@@ -281,7 +283,6 @@ export const ApplicationContextProvider = ({ children }) => {
             loading,
             error,
             setError,
-            tokenRef,
             user,
             refreshToken,
             persist,
