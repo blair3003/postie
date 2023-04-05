@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AiOutlinePlus, AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { useApplicationContext } from '../../app/store'
@@ -6,7 +6,7 @@ import { useApplicationContext } from '../../app/store'
 const PostCreate = () => {
 
     const [title, setTitle] = useState('')
-    const [thumbnail, setThumbnail] = useState('')
+    const [thumbnail, setThumbnail] = useState(null)
     const [body, setBody] = useState('')
     const [tag, setTag] = useState('')
     const [tags, setTags] = useState([])
@@ -15,13 +15,6 @@ const PostCreate = () => {
     const navigate = useNavigate()
 
     const { createPost, loading, error } = useApplicationContext()
-
-    const valid = [title, body, authorId].every(Boolean)
-
-    const handleTitleChange = e => setTitle(e.target.value)
-    const handleThumbnailChange = e => setThumbnail(e.target.value)
-    const handleBodyChange = e => setBody(e.target.value)
-    const handleTagChange = e => setTag(e.target.value)
 
     const handleAddTag = e => {
         e.preventDefault()
@@ -37,7 +30,7 @@ const PostCreate = () => {
 
     const handleSubmitPost = async (e) => {
         e.preventDefault()
-        if (!valid) return
+        if (![title, thumbnail, body, authorId].every(Boolean)) return
         const post = await createPost({
             title,
             thumbnail,
@@ -62,16 +55,16 @@ const PostCreate = () => {
                     required
                     className="rounded-lg p-4"
                     value={title}
-                    onChange={handleTitleChange}
+                    onChange={e => setTitle(e.target.value)}
                 />
                 <label htmlFor="thumbnail" className="offscreen">Thumbnail:</label>
                 <input
                     id="thumbnail"
-                    type="text"
-                    placeholder="Thumbnail"
+                    type="file"
+                    accept="image/*"
+                    required
                     className="rounded-lg p-4"
-                    value={thumbnail}
-                    onChange={handleThumbnailChange}
+                    onChange={e => setThumbnail(e.target.files[0])}
                 />
                 <label htmlFor="body" className="offscreen">Body:</label>
                 <textarea
@@ -81,7 +74,7 @@ const PostCreate = () => {
                     required
                     className="rounded-lg p-4"
                     value={body}
-                    onChange={handleBodyChange}
+                    onChange={e => setBody(e.target.value)}
                 ></textarea>
                 <div>
                     <div className="flex items-center gap-2 flex-wrap mb-4">
@@ -99,7 +92,7 @@ const PostCreate = () => {
                             placeholder="New tag"
                             className="rounded-lg grow px-3"
                             value={tag}
-                            onChange={handleTagChange}
+                            onChange={e => setTag(e.target.value)}
                         />
                         <button type="button" disabled={loading} onClick={handleAddTag} className="p-4 hover:bg-yellow-500 text-black rounded-full w-12 h-12 flex justify-center items-center text-xl font-bold">
                             <AiOutlinePlus />

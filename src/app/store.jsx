@@ -57,14 +57,18 @@ export const ApplicationContextProvider = ({ children }) => {
         try {
             setError(false)
             setLoading(true)
+
+            const formData = new FormData()            
+            Object.keys(post).forEach(key => formData.append(key, post[key]))
+
             const response = await fetch('http://localhost:3500/posts', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${tokenRef.current}`
                 },
-                body: JSON.stringify(post)
+                body: formData
             })
+
             if (response.status === 403) {
                 await handlePersist()
                 return createPost(post)
