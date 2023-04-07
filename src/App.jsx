@@ -9,6 +9,8 @@ import PostEdit from './features/posts/PostEdit'
 import Login from './features/auth/Login'
 import Logout from './features/auth/Logout'
 import Register from './features/auth/Register'
+import Profile from './features/auth/Profile'
+import ProfileEdit from './features/auth/ProfileEdit'
 import Auth from './components/Auth'
 
 function App() {
@@ -28,6 +30,16 @@ function App() {
                             <Route index element={<Post />} />
                             <Route element={<Auth roles={['admin', 'author']} />}>
                                 <Route path="edit" element={<PostEdit />} />
+                            </Route>
+                        </Route>
+                    </Route>
+
+                    <Route path="users">
+                        <Route index element={<Navigate to="/" replace/>} />
+                        <Route path=":id">
+                            <Route index element={<Profile />} />
+                            <Route element={<Auth roles={['admin', 'author']} />}>
+                                <Route path="edit" element={<ProfileEdit />} />
                             </Route>
                         </Route>
                     </Route>

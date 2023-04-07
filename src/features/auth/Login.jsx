@@ -5,7 +5,7 @@ import { useApplicationContext } from '../../app/store'
 
 const Login = () => {
 
-    const { loginUser, loading, error, setError, persist, setPersist } = useApplicationContext()
+    const { user, loginUser, loading, error, setError, persist, setPersist } = useApplicationContext()
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -32,6 +32,10 @@ const Login = () => {
     useEffect(() => {
         emailRef.current.focus()
     }, [])
+
+    useEffect(() => {
+        if (user) navigate(location.state?.from.pathname ?? '/', { replace: true })
+    }, [user])
 
     useEffect(() => {
         setError(false)        

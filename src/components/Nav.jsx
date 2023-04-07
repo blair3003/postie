@@ -11,6 +11,7 @@ const Nav = ({ className }) => {
         
         <nav className={className}>
             <NavLink to="/logout">Logout</NavLink>
+            <NavLink to={`/users/${user.id}`}>Profile</NavLink>
             <NavLink to="/posts/create">Create</NavLink>
         </nav> :
         

@@ -20,6 +20,23 @@ export const ApplicationContextProvider = ({ children }) => {
     const [error, setError] = useState(false)
     const [loading, setLoading] = useState(false)
     const [persist, setPersist] = useState(JSON.parse(localStorage.getItem('persist')) || false)
+
+    const getProfile = async (id) => {
+        try {
+            setError(false)
+            setLoading(true)
+            const response = await fetch(`http://localhost:3500/users/${id}`)
+            if(!response.ok) throw new Error(`FetchError: ${response.status}`)
+            const data = await response.json()
+            return data
+        } catch (err) {
+            console.error(err)
+            setError(true)
+        } finally {
+            setLoading(false)
+        }  
+
+    }
     
     const getPosts = async () => {
         try {
@@ -243,6 +260,7 @@ export const ApplicationContextProvider = ({ children }) => {
 
     const handlePersist = async () => {
         if (persist) {
+            console.log('handling persist')
             const newToken = await refreshToken()
             if (newToken) updateToken(newToken)
         }
@@ -277,6 +295,7 @@ export const ApplicationContextProvider = ({ children }) => {
         <ApplicationContext.Provider value={{
             getPost,
             getPosts,
+            getProfile,
             createPost,
             updatePost,
             deletePost,
