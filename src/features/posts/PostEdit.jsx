@@ -8,22 +8,20 @@ const PostEdit = () => {
     const { id } = useParams()
 
     const [title, setTitle] = useState('')
-    const [thumbnail, setThumbnail] = useState('')
     const [body, setBody] = useState('')
     const [tag, setTag] = useState('')
     const [tags, setTags] = useState([])
-    const [authorId, setAuthorId] = useState("6407970a85841dc03653c00c")
+    const [authorId, setAuthorId] = useState('')
 
     const ready = useRef(true)
 
     const navigate = useNavigate()
 
-    const { getPost, updatePost, deletePost, loading, error, setError } = useApplicationContext()
+    const { getPost, updatePost, deletePost, loading, error, user } = useApplicationContext()
 
-    const valid = [id, title, body, authorId].every(Boolean)
+    const valid = [id, title, body].every(Boolean)
 
     const handleTitleChange = e => setTitle(e.target.value)
-    const handleThumbnailChange = e => setThumbnail(e.target.value)
     const handleBodyChange = e => setBody(e.target.value)
     const handleTagChange = e => setTag(e.target.value)
 
@@ -56,7 +54,6 @@ const PostEdit = () => {
         const updated = await updatePost({
             id,
             title,
-            thumbnail,
             body,
             tags,
             authorId
@@ -70,9 +67,9 @@ const PostEdit = () => {
         const data = await getPost(id)
         if (data) {
             if (data.title) setTitle(data.title)
-            if (data.thumbnail) setThumbnail(data.thumbnail)
             if (data.body) setBody(data.body)
             if (data.tags) setTags(data.tags)
+            if (data.author) setAuthorId(data.author.id)
         }
     }
 
@@ -96,15 +93,6 @@ const PostEdit = () => {
                     className="rounded-lg p-4"
                     value={title}
                     onChange={handleTitleChange}
-                />
-                <label htmlFor="thumbnail" className="offscreen">Thumbnail:</label>
-                <input
-                    id="thumbnail"
-                    type="text"
-                    placeholder="Thumbnail"
-                    className="rounded-lg p-4"
-                    value={thumbnail}
-                    onChange={handleThumbnailChange}
                 />
                 <label htmlFor="body" className="offscreen">Body:</label>
                 <textarea
