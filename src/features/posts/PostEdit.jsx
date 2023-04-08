@@ -19,6 +19,8 @@ const PostEdit = () => {
 
     const { getPost, updatePost, deletePost, loading, error, user } = useApplicationContext()
 
+    
+
     const valid = [id, title, body].every(Boolean)
 
     const handleTitleChange = e => setTitle(e.target.value)
@@ -66,6 +68,8 @@ const PostEdit = () => {
     const handleGetPost = async () => {
         const data = await getPost(id)
         if (data) {
+            const canEdit = user?.roles.includes('admin') || user?.id === data?.author.id
+            if (!canEdit) navigate(`/posts/${id}`)
             if (data.title) setTitle(data.title)
             if (data.body) setBody(data.body)
             if (data.tags) setTags(data.tags)

@@ -10,11 +10,11 @@ const PostCreate = () => {
     const [body, setBody] = useState('')
     const [tag, setTag] = useState('')
     const [tags, setTags] = useState([])
-    const [authorId, setAuthorId] = useState("6407970a85841dc03653c00c")
+    const [authorId, setAuthorId] = useState('')
 
     const navigate = useNavigate()
 
-    const { createPost, loading, error } = useApplicationContext()
+    const { createPost, loading, error, user } = useApplicationContext()
 
     const handleAddTag = e => {
         e.preventDefault()
@@ -42,6 +42,10 @@ const PostCreate = () => {
             navigate(`/posts/${post._id}`)
         }        
     }
+
+    useEffect(() => {
+        if (user) setAuthorId(user.id)
+    }, [user])
     
     return (
         <section className="max-w-xl mx-auto bg-red-900/50 text-black p-4 rounded-lg">

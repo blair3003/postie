@@ -33,9 +33,6 @@ const Register = () => {
     const EMAIL_REGEX = /^.+@.+\.[a-zA-Z]{2,}$/
     const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!"£$%^&*()-_=+{}[\]'@#~?/\\|,.<>]).{8,24}$/
 
-
-    const handleMatchChange = e => setMatch(e.target.value)
-
     const handleRegister = async e => {
         e.preventDefault()
         // if (!nameValid || !emailValid || !passwordValid || !matchValid) return

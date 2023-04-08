@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useParams, useNavigate, Link } from 'react-router-dom'
 import { AiFillEdit } from 'react-icons/ai'
 import parse from 'html-react-parser'
 import { format } from 'date-fns'
@@ -16,6 +16,8 @@ const Post = () => {
     const ready = useRef(true)
 
     const { getPost, loading, error, user } = useApplicationContext()
+
+    const canEdit = user?.roles.includes('admin') || user?.id === post?.author.id
 
     const handleEditPost = () => navigate(`/posts/${id}/edit`)
 
@@ -40,10 +42,10 @@ const Post = () => {
                     <img className="rounded-full drop-shadow" src={post.author.pic ? post.author.pic : '/img/default-pic.png'} alt={post.author.name} />
                 </div>
                 <div className="grow">
-                    <p className="font-bold">{post.author.name}</p>
+                    <Link to={`/users/${post.author.id}`} className="font-bold">{post.author.name}</Link>
                     <p>{format(Date.parse(post.createdAt), 'MMMM do, yyyy')}</p>
                 </div>
-                {user ? <button onClick={handleEditPost} className="text-3xl hover:text-white">
+                {canEdit ? <button onClick={handleEditPost} className="text-3xl hover:text-white">
                     <AiFillEdit />
                 </button> : null}
             </div>

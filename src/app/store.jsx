@@ -197,6 +197,11 @@ export const ApplicationContextProvider = ({ children }) => {
         }
     }
 
+    const updateUser = async (user) => {
+
+
+    } 
+
     const loginUser = async (user) => {
         try {
             setError(false)
@@ -301,6 +306,7 @@ export const ApplicationContextProvider = ({ children }) => {
             deletePost,
             createComment,
             registerUser,
+            updateUser,
             loginUser,
             logoutUser,
             loading,
