@@ -71,6 +71,7 @@ export const ApplicationContextProvider = ({ children }) => {
     }
 
     const createPost = async (post) => {
+
         try {
             setError(false)
             setLoading(true)
@@ -99,6 +100,41 @@ export const ApplicationContextProvider = ({ children }) => {
             setLoading(false)
         }
     }
+
+    const updateProfile = async (profile) => {
+
+        console.log(profile)
+
+
+        try {
+            setError(false)
+            setLoading(true)
+
+            const formData = new FormData()            
+            Object.keys(profile).forEach(key => {
+                if (profile[key]) formData.append(key, profile[key])
+            })
+
+            const response = await fetch('http://localhost:3500/users', {
+                method: 'PATCH',
+                headers: {
+                    'Authorization': `Bearer ${tokenRef.current}`
+                },
+                body: formData
+            })
+            if (response.status === 403) {
+                await handlePersist()
+                return updateUser(post)
+            } else if (!response.ok) throw new Error(`FetchError: ${response.status}`)
+            const data = await response.json()
+            return data.updated
+        } catch (err) {
+            console.error(err)
+            setError(true)
+        } finally {
+            setLoading(false)
+        }
+    } 
 
     const updatePost = async (post) => {
         try {
@@ -196,11 +232,6 @@ export const ApplicationContextProvider = ({ children }) => {
             setLoading(false)
         }
     }
-
-    const updateUser = async (user) => {
-
-
-    } 
 
     const loginUser = async (user) => {
         try {
@@ -301,12 +332,12 @@ export const ApplicationContextProvider = ({ children }) => {
             getPost,
             getPosts,
             getProfile,
+            updateProfile,
             createPost,
             updatePost,
             deletePost,
             createComment,
             registerUser,
-            updateUser,
             loginUser,
             logoutUser,
             loading,
