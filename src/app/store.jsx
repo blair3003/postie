@@ -200,7 +200,10 @@ export const ApplicationContextProvider = ({ children }) => {
                 },
                 body: JSON.stringify(comment)
             })
-            if(!response.ok) throw new Error(`FetchError: ${response.status}`)
+            if (response.status === 403) {
+                await handlePersist()
+                return createComment(comment)
+            } else if (!response.ok) throw new Error(`FetchError: ${response.status}`)
             const data = await response.json()
             return data.updated
         } catch (err) {

@@ -10,7 +10,8 @@ const CommentCreate = ({ post, parent }) => {
 
     const bodyRef = useRef()
 
-    const handleSubmitComment = async e => {
+    const handleSubmitComment = async (e) => {
+        console.log('commenting')
         e.preventDefault()
         if (!body) return
         const comment = await createComment({
@@ -19,9 +20,7 @@ const CommentCreate = ({ post, parent }) => {
             body,
             parentId: parent?._id
         })
-        if (comment && !error) {
-            setBody('')
-        }
+        if (comment && !error) location.reload()
     }
 
     useEffect(() => {
