@@ -14,7 +14,7 @@ const PostCreate = () => {
 
     const navigate = useNavigate()
 
-    const { createPost, loading, error, user } = useApplicationContext()
+    const { createPost, loading, error, user, baseQueryWithReauth } = useApplicationContext()
 
     const handleAddTag = e => {
         e.preventDefault()
@@ -31,13 +31,27 @@ const PostCreate = () => {
     const handleSubmitPost = async (e) => {
         e.preventDefault()
         if (![title, thumbnail, body, authorId].every(Boolean)) return
-        const post = await createPost({
-            title,
-            thumbnail,
-            body,
-            tags,
-            authorId
-        })
+        // const post = await createPost({
+        //     title,
+        //     thumbnail,
+        //     body,
+        //     tags,
+        //     authorId
+        // })
+
+        const post = baseQueryWithReauth({
+            url: 'posts',
+            method: 'POST',
+            auth: true,
+            body: {
+                title,
+                thumbnail,
+                body,
+                tags,
+                authorId
+            }
+        }).post
+
         if (post && !error) {
             navigate(`/posts/${post._id}`)
         }        

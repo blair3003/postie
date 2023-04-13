@@ -25,26 +25,64 @@ export const ApplicationContextProvider = ({ children }) => {
 
 
 
+    // args: { url: 'posts', method: 'POST', auth: true, body: { title: abc, ... } }
+    const baseQuery = async (args) => {
+        const url = args?.url ? `http://localhost:3500/${args.url}` : null
+        const method = args?.method ?? 'GET'
+        const headers = args?.auth ? { 'Authorization': `Bearer ${tokenRef.current}` } : {}
+        const body = args?.body ? useFormData(args.body) : null
 
+        console.log(url, { method, headers, body })
 
-    
-
-    // postsFetch({ method: 'POST', body: { title: abc, ... } })
-    const postsFetch = async (args) => {        
         try {
             setError(false)
-            setLoading(true)
+            setLoading(true)            
+            const response = await fetch(url, { method, headers, body })
+            return response
+        } catch (err) {
+            console.error(err)
+            setError(true)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    const baseQueryWithReauth = async (args) => {
+        let response = await baseQuery(args)    
+
+        if (response) {
+            console.log(response)
+
+            if (response.status === 403) console.log(`response.status === 403`)
+            if (response.error?.status === 403) console.log(`response.error?.status === 403`)
+            if (response.ok) console.log(`response.ok`)
+            if (!response.ok) console.log(`!response.ok`)
+
+            const data = await response.json()
+            return data
+        }
+    }
+
+
+
+
+
+
+    // postsFetch({ method: 'POST', auth: true, body: { title: abc, ... } })
+    const postsFetch = async (method = 'GET', auth = false, body = null) => {        
+        try {
+            setError(false)
+            setLoading(true)            
             const response = await fetch('http://localhost:3500/posts', {
-                method: args.method,
-                headers: {
-                    'Authorization': `Bearer ${tokenRef.current}`
-                },
-                body: useFormData(args.body)
+                method,
+                headers: auth ? { 'Authorization': `Bearer ${tokenRef.current}` } : null,
+                body: useFormData(body)
             })
             if (response.status === 403) {
                 await handlePersist()
-                return postsFetch(args)
-            } else if (!response.ok) throw new Error(`FetchError: ${response.status}`)
+                return postsFetch(method, auth, body)
+            }
+            if (!response.ok) throw new Error(`FetchError: ${response.status}`)
             const data = await response.json()
             return data
         } catch (err) {
@@ -163,7 +201,7 @@ export const ApplicationContextProvider = ({ children }) => {
             })
             if (response.status === 403) {
                 await handlePersist()
-                return updateUser(post)
+                return updateProfile(profile)
             } else if (!response.ok) throw new Error(`FetchError: ${response.status}`)
             const data = await response.json()
             return data.updated
@@ -388,7 +426,8 @@ export const ApplicationContextProvider = ({ children }) => {
             user,
             refreshToken,
             persist,
-            setPersist
+            setPersist,
+            baseQueryWithReauth
         }}>
             {children}
         </ApplicationContext.Provider>

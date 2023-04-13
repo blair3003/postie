@@ -6,10 +6,13 @@ const Feed = () => {
 
     const [posts, setPosts] = useState()
 
-    const { getPosts, loading, error } = useApplicationContext()
+    const { getPosts, loading, error, baseQueryWithReauth } = useApplicationContext()
 
     const handleGetPosts = async () => {
-        const data = await getPosts()
+        // const data = await getPosts()
+
+        const data = await baseQueryWithReauth({ url: 'posts' })
+
         if (data) setPosts(data)
     }
 
