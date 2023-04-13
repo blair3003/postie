@@ -6,6 +6,7 @@ import {
     useState
 } from 'react'
 import jwtDecode from 'jwt-decode'
+import useFormData from '../hooks/useFormData'
 
 const ApplicationContext = createContext()
 
@@ -21,12 +22,29 @@ export const ApplicationContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(false)
     const [persist, setPersist] = useState(JSON.parse(localStorage.getItem('persist')) || false)
 
-    const getProfile = async (id) => {
+
+
+
+
+
+    
+
+    // postsFetch({ method: 'POST', body: { title: abc, ... } })
+    const postsFetch = async (args) => {        
         try {
             setError(false)
             setLoading(true)
-            const response = await fetch(`http://localhost:3500/users/${id}`)
-            if(!response.ok) throw new Error(`FetchError: ${response.status}`)
+            const response = await fetch('http://localhost:3500/posts', {
+                method: args.method,
+                headers: {
+                    'Authorization': `Bearer ${tokenRef.current}`
+                },
+                body: useFormData(args.body)
+            })
+            if (response.status === 403) {
+                await handlePersist()
+                return postsFetch(args)
+            } else if (!response.ok) throw new Error(`FetchError: ${response.status}`)
             const data = await response.json()
             return data
         } catch (err) {
@@ -34,9 +52,13 @@ export const ApplicationContextProvider = ({ children }) => {
             setError(true)
         } finally {
             setLoading(false)
-        }  
-
+        }
     }
+
+
+
+
+
     
     const getPosts = async () => {
         try {
@@ -99,6 +121,23 @@ export const ApplicationContextProvider = ({ children }) => {
         } finally {
             setLoading(false)
         }
+    }
+
+    const getProfile = async (id) => {
+        try {
+            setError(false)
+            setLoading(true)
+            const response = await fetch(`http://localhost:3500/users/${id}`)
+            if(!response.ok) throw new Error(`FetchError: ${response.status}`)
+            const data = await response.json()
+            return data
+        } catch (err) {
+            console.error(err)
+            setError(true)
+        } finally {
+            setLoading(false)
+        }  
+
     }
 
     const updateProfile = async (profile) => {
