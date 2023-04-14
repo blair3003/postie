@@ -23,21 +23,16 @@ export const ApplicationContextProvider = ({ children }) => {
     const [persist, setPersist] = useState(JSON.parse(localStorage.getItem('persist')) || false)
 
 
-
-
-    // args: { url: 'posts', method: 'POST', auth: true, body: { title: abc, ... } }
-    const baseQuery = async (args) => {
+    const baseFetch = async (args) => {
         const url = args?.url ? `http://localhost:3500/${args.url}` : null
         const method = args?.method ?? 'GET'
         const headers = args?.auth ? { 'Authorization': `Bearer ${tokenRef.current}` } : {}
+        const credentials = args?.credentials ? 'include' : 'omit'
         const body = args?.body ? useFormData(args.body) : null
-
-        console.log(url, { method, headers, body })
-
         try {
             setError(false)
             setLoading(true)            
-            const response = await fetch(url, { method, headers, body })
+            const response = await fetch(url, { method, headers, credentials, body })
             return response
         } catch (err) {
             console.error(err)
@@ -47,21 +42,71 @@ export const ApplicationContextProvider = ({ children }) => {
         }
     }
 
-    const baseQueryWithReauth = async (args) => {
-        let response = await baseQuery(args)    
+    const getFetch = async (args) => {
+        let response = await baseFetch(args)
+        if (!response) return
+        if (response.status === 403) {
+            const refresh = await refreshToken()
+            if (!refresh) return
+            response = await baseFetch(args)
+        }
+        const data = await response.json()
+        return data        
+    }
 
-        if (response) {
-            console.log(response)
+    const refreshToken = async () => {
+        if (!persist) return
+        console.log('Refreshing access')
+        const refresh = await baseFetch({ url: 'auth/refresh', credentials: true })
+        if (!refresh.ok) {
+            console.log('Login has expired')
+            updateToken(null)
+            return false
+        }
+        const { accessToken } = await refresh.json()
+        updateToken(accessToken)
+        return true
+    }
 
-            if (response.status === 403) console.log(`response.status === 403`)
-            if (response.error?.status === 403) console.log(`response.error?.status === 403`)
-            if (response.ok) console.log(`response.ok`)
-            if (!response.ok) console.log(`!response.ok`)
+    const updateToken = (token) => {
+        tokenRef.current = token
+        updateUser()
+    }
 
-            const data = await response.json()
-            return data
+    const updateUser = () => {
+        if (tokenRef.current) {
+            const { id, name, email, pic, roles } = jwtDecode(tokenRef.current).user
+            setUser({ id, name, email, pic, roles })
+        } else {     
+            setUser(null)      
         }
     }
+
+    useEffect(() => {
+        if (ready.current) {
+            refreshToken()
+            return () => ready.current = false
+        }
+    }, [])
+
+
+    useEffect(() => {
+        localStorage.setItem('persist', JSON.stringify(persist))
+    }, [persist])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -93,27 +138,6 @@ export const ApplicationContextProvider = ({ children }) => {
         }
     }
 
-
-
-
-
-    
-    const getPosts = async () => {
-        try {
-            setError(false)
-            setLoading(true)
-            const response = await fetch(`http://localhost:3500/posts`)
-            if(!response.ok) throw new Error(`FetchError: ${response.status}`)
-            const data = await response.json()
-            return data
-        } catch (err) {
-            console.error(err)
-            setError(true)
-        } finally {
-            setLoading(false)
-        }        
-    }
-
     const getPost = async (id) => {
         try {
             setError(false)
@@ -128,37 +152,6 @@ export const ApplicationContextProvider = ({ children }) => {
         } finally {
             setLoading(false)
         }        
-    }
-
-    const createPost = async (post) => {
-
-        try {
-            setError(false)
-            setLoading(true)
-
-            const formData = new FormData()            
-            Object.keys(post).forEach(key => formData.append(key, post[key]))
-
-            const response = await fetch('http://localhost:3500/posts', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${tokenRef.current}`
-                },
-                body: formData
-            })
-
-            if (response.status === 403) {
-                await handlePersist()
-                return createPost(post)
-            } else if (!response.ok) throw new Error(`FetchError: ${response.status}`)
-            const data = await response.json()
-            return data.post
-        } catch (err) {
-            console.error(err)
-            setError(true)
-        } finally {
-            setLoading(false)
-        }
     }
 
     const getProfile = async (id) => {
@@ -358,62 +351,32 @@ export const ApplicationContextProvider = ({ children }) => {
         }        
     }
 
-    const refreshToken = async () => {
-        console.log(`Making refresh fetch call`)
-        try {
-            const response = await fetch('http://localhost:3500/auth/refresh', {
-                credentials: 'include',
-            })
-            if(!response.ok) throw new Error(`FetchError: ${response.status}`)
-            const data = await response.json()
-            return data.accessToken
-        } catch (err) {
-            updateToken(null)
-            setPersist(false)
-            console.error(err)
-        }
-    }
-
     const handlePersist = async () => {
         if (persist) {
-            console.log('handling persist')
-            const newToken = await refreshToken()
-            if (newToken) updateToken(newToken)
+            console.log('Refreshing access')
+            const refresh = await baseFetch({ url: 'auth/refresh', credentials: true })
+            if (!refresh.ok) {
+                console.log('Login has expired')
+                return
+            }
+            const { accessToken } = await refresh.json()
+            updateToken(accessToken)
         }
     }
 
-    const updateToken = (token) => {
-        tokenRef.current = token
-        if (tokenRef.current) {
-            const { id, name, email, pic, roles } = jwtDecode(tokenRef.current).user
-            setUser({
-                id,
-                name,
-                email,
-                pic,
-                roles
-            })
-        } else setUser(null)
-    }
 
-    useEffect(() => {
-        if (ready.current) {
-            handlePersist()
-            return () => ready.current = false
-        }
-    }, [])
 
-    useEffect(() => {
-        localStorage.setItem('persist', JSON.stringify(persist))
-    }, [persist])
+
+
+
+
+
 
     return (
         <ApplicationContext.Provider value={{
             getPost,
-            getPosts,
             getProfile,
             updateProfile,
-            createPost,
             updatePost,
             deletePost,
             createComment,
@@ -424,10 +387,9 @@ export const ApplicationContextProvider = ({ children }) => {
             error,
             setError,
             user,
-            refreshToken,
             persist,
             setPersist,
-            baseQueryWithReauth
+            getFetch
         }}>
             {children}
         </ApplicationContext.Provider>

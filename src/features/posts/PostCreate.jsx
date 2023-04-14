@@ -14,7 +14,7 @@ const PostCreate = () => {
 
     const navigate = useNavigate()
 
-    const { createPost, loading, error, user, baseQueryWithReauth } = useApplicationContext()
+    const { createPost, loading, error, user, getFetch } = useApplicationContext()
 
     const handleAddTag = e => {
         e.preventDefault()
@@ -39,7 +39,7 @@ const PostCreate = () => {
         //     authorId
         // })
 
-        const post = baseQueryWithReauth({
+        const response = await getFetch({
             url: 'posts',
             method: 'POST',
             auth: true,
@@ -50,10 +50,10 @@ const PostCreate = () => {
                 tags,
                 authorId
             }
-        }).post
+        })
 
-        if (post && !error) {
-            navigate(`/posts/${post._id}`)
+        if (response && !error) {
+            navigate(`/posts/${response.post._id}`)
         }        
     }
 
