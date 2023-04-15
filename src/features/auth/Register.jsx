@@ -5,7 +5,7 @@ import { useApplicationContext } from '../../app/store'
 
 const Register = () => {
 
-    const { registerUser, loading, error, setError } = useApplicationContext()
+    const { getFetch, loading, error, setError } = useApplicationContext()
 
     const nameRef = useRef()
     const errorRef = useRef()
@@ -31,23 +31,22 @@ const Register = () => {
 
     const NAME_REGEX = /^[a-zA-Z][a-zA-Z0-9-_' ]{0,23}$/
     const EMAIL_REGEX = /^.+@.+\.[a-zA-Z]{2,}$/
-    const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!"£$%^&*()-_=+{}[\]'@#~?/\\|,.<>]).{8,24}$/
+    const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!"£$%^&*()\-_=+{}[\]'@#~?/\\|,.<>]).{8,24}$/
 
     const handleRegister = async e => {
         e.preventDefault()
-        // if (!nameValid || !emailValid || !passwordValid || !matchValid) return
-        const user = await registerUser({
-            name,
-            email,
-            password
+        if (!nameValid || !emailValid || !passwordValid || !matchValid) return
+        const data = await getFetch({
+            url: 'auth/register',
+            method: 'POST',
+            body: {
+                name,
+                email,
+                password
+            }
         })
-        if (user && !error) {
-            setName('')
-            setEmail('')
-            setPassword('')
-            setMatch('')
-            // navigate(`/users/${user._id}`)
-            console.log(`Registered user - ${user.name}`)
+        if (data.user && !error) {
+            navigate('/login')
         }        
     }
 

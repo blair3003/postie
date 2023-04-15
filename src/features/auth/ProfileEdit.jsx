@@ -11,7 +11,7 @@ const ProfileEdit = () => {
     const navigate = useNavigate()
 
     const { id } = useParams()
-    const { getProfile, updateProfile, user, loading, error, setError } = useApplicationContext()
+    const { getFetch, user, loading, error, setError } = useApplicationContext()
 
     const isAdmin = user?.roles.includes('admin')
 
@@ -41,9 +41,9 @@ const ProfileEdit = () => {
     const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!"£$%^&*()\-_=+{}[\]'@#~?/\\|,.<>]).{8,24}$/
 
     const handleGetProfile = async () => {
-        const data = await getProfile(id)
         const canEdit = isAdmin || user?.id === id
         if (!canEdit) navigate(`/users/${id}`)
+        const data = await getFetch({ url: `users/${id}` })
         if (data) setProfile(data)
     }
 
@@ -52,17 +52,22 @@ const ProfileEdit = () => {
         if (![name, email].every(Boolean)) return
         if (password && (!passwordValid || !matchValid)) return
 
-        const user = await updateProfile({
-            id,
-            name,
-            email,
-            password,
-            pic,
-            roles,
-            active
+        const data = await getFetch({
+            url: 'users',
+            method: 'PATCH',
+            auth: true,
+            body: {
+                id,
+                name,
+                email,
+                password,
+                pic,
+                roles,
+                active
+            }
         })
-        if (user && !error) {
-            navigate(`/users/${user._id}`)
+        if (data.updated && !error) {
+            navigate(`/users/${data.updated._id}`)
         }
     }
 

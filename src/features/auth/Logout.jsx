@@ -4,18 +4,30 @@ import { useApplicationContext } from '../../app/store'
 
 const Logout = () => {
 
-    const { logoutUser, error } = useApplicationContext()
-
+    const ready = useRef(true)
     const errorRef = useRef()
     const navigate = useNavigate()
 
+    const { getFetch, updateToken, error, setPersist } = useApplicationContext()
+
     const handleLogout = async e => {
-        const loggedOut = await logoutUser()
-        if (loggedOut) navigate('/')
+        const data = await getFetch({
+            url: 'auth/logout',
+            method: 'POST',
+            credentials: true
+        })
+        if (data && !error) {
+            updateToken(null)
+            setPersist(false)
+            navigate('/')
+        }
     }
 
     useEffect(() => {
-        handleLogout()
+        if (ready.current) {
+            handleLogout()
+            return () => ready.current = false
+        }        
     }, [])
 
     useEffect(() => {

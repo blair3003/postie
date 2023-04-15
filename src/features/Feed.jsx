@@ -4,9 +4,9 @@ import PostPreview from './posts/PostPreview'
 
 const Feed = () => {
 
-    const [posts, setPosts] = useState()
+    const [posts, setPosts] = useState([])
 
-    const { getPosts, loading, error, getFetch } = useApplicationContext()
+    const { getFetch, loading, error } = useApplicationContext()
 
     const handleGetPosts = async () => {
         // const data = await getPosts()
@@ -31,7 +31,7 @@ const Feed = () => {
             <div className="auto-grid">
                 {loading ? <p>Loading...</p> :
                 error ? <p>Error loading posts!</p> : 
-                posts ? posts.map(post => <PostPreview key={post._id} post={post} />) : null}
+                posts.length ? posts.map(post => <PostPreview key={post._id} post={post} />) : 'No posts to display.'}
             </div>
         </section>
     )

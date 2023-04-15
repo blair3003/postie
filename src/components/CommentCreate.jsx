@@ -4,23 +4,27 @@ import { useApplicationContext } from '../app/store'
 
 const CommentCreate = ({ post, parent }) => {
 
-    const { createComment, user, loading, error } = useApplicationContext()
+    const { getFetch, user, loading, error } = useApplicationContext()
 
     const [body, setBody] = useState('')
 
     const bodyRef = useRef()
 
     const handleSubmitComment = async (e) => {
-        console.log('commenting')
         e.preventDefault()
         if (!body) return
-        const comment = await createComment({
-            postId: post,
-            authorId: user.id,
-            body,
-            parentId: parent?._id
+        const data = await getFetch({
+            url: 'posts/comments',
+            method: 'POST',
+            auth: true,
+            body: {
+                postId: post,
+                authorId: user.id,
+                body,
+                parentId: parent?._id
+            }
         })
-        if (comment && !error) location.reload()
+        if (data && !error) location.reload()
     }
 
     useEffect(() => {

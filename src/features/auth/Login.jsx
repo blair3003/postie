@@ -5,7 +5,7 @@ import { useApplicationContext } from '../../app/store'
 
 const Login = () => {
 
-    const { user, loginUser, loading, error, setError, persist, setPersist } = useApplicationContext()
+    const { user, getFetch, updateToken, loading, error, setError, persist, setPersist } = useApplicationContext()
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -18,13 +18,17 @@ const Login = () => {
 
     const handleLogin = async e => {
         e.preventDefault()
-        const accessToken = await loginUser({
-            email,
-            password
+        const data = await getFetch({
+            url: 'auth',
+            method: 'POST',
+            credentials: true,
+            body: {
+                email,
+                password
+            }
         })
-        if (accessToken && !error) {
-            setEmail('')
-            setPassword('')
+        if (data.accessToken && !error) {
+            updateToken(data.accessToken)
             navigate(location.state.from.pathname, { replace: true })
         }
     }

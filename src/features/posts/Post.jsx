@@ -15,14 +15,14 @@ const Post = () => {
 
     const ready = useRef(true)
 
-    const { getPost, loading, error, user } = useApplicationContext()
+    const { getFetch, loading, error, user } = useApplicationContext() 
 
     const canEdit = user?.roles.includes('admin') || user?.id === post?.author.id
 
     const handleEditPost = () => navigate(`/posts/${id}/edit`)
 
     const handleGetPost = async () => {
-        const data = await getPost(id)
+        const data = await getFetch({ url: `posts/${id}` })
         if (data) setPost(data)
     }
 

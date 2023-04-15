@@ -17,7 +17,7 @@ const PostEdit = () => {
 
     const navigate = useNavigate()
 
-    const { getPost, updatePost, deletePost, loading, error, user } = useApplicationContext()
+    const { getFetch, loading, error, user } = useApplicationContext()
 
     
 
@@ -42,9 +42,13 @@ const PostEdit = () => {
     const handleDeletePost = async (e) => {
         e.preventDefault()
         if (confirm('Please confirm you would like to delete this post.')) {
-            console.log(`Deleting`)
-            const deleted = await deletePost({id})
-            if (deleted && !error) {
+            const data = await getFetch({
+                url: 'posts',
+                method: 'DELETE',
+                auth: true,
+                body: { id }
+            })
+            if (data.deleted && !error) {
                 navigate('/posts')
             }   
         }
@@ -53,27 +57,32 @@ const PostEdit = () => {
     const handleUpdatePost = async (e) => {
         e.preventDefault()
         if (!valid) return
-        const updated = await updatePost({
-            id,
-            title,
-            body,
-            tags,
-            authorId
+        const data = await getFetch({
+            url: 'posts',
+            method: 'PATCH',
+            auth: true,
+            body: {
+                id,
+                title,
+                body,
+                tags,
+                authorId
+            }
         })
-        if (updated && !error) {
-            navigate(`/posts/${updated._id}`)
+        if (data.updated && !error) {
+            navigate(`/posts/${data.updated._id}`)
         }        
     }
 
     const handleGetPost = async () => {
-        const data = await getPost(id)
+        const data = await getFetch({ url: `posts/${id}` })
         if (data) {
             const canEdit = user?.roles.includes('admin') || user?.id === data?.author.id
             if (!canEdit) navigate(`/posts/${id}`)
-            if (data.title) setTitle(data.title)
-            if (data.body) setBody(data.body)
-            if (data.tags) setTags(data.tags)
-            if (data.author) setAuthorId(data.author.id)
+            setTitle(data.title)
+            setBody(data.body)
+            setTags(data.tags)
+            setAuthorId(data.author.id)
         }
     }
 

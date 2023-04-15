@@ -9,13 +9,13 @@ const Profile = () => {
     const ready = useRef(true)
     const navigate = useNavigate()    
     const { id } = useParams()
-    const { getProfile, user, loading, error } = useApplicationContext()    
+    const { getFetch, user, loading, error } = useApplicationContext()    
     const [profile, setProfile] = useState()
 
     const canEdit = user?.roles.includes('admin') || user?.id === id
 
     const handleGetProfile = async () => {
-        const data = await getProfile(id)
+        const data = await getFetch({ url: `users/${id}` })
         if (data) setProfile(data)
     }
 

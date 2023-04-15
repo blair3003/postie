@@ -3,15 +3,15 @@ import { formatDistanceToNow } from 'date-fns'
 import CommentCreate from './CommentCreate'
 import { useApplicationContext } from '../app/store'
 
-const Comment = ({ post, comment, depth }) => {
+const Comment = ({ post, comment }) => {
 
     const [toggle, setToggle] = useState(false)
     const { user } = useApplicationContext()
 
     return (
-        <div className="flex gap-2 pb-2">
+        <div className="flex gap-2">
             <div className="w-8">
-                <img className="rounded-full drop-shadow" src={comment.author.pic ? post.author.pic : '/img/default-pic.png'} alt={comment.author.name} />
+                <img className="rounded-full drop-shadow" src={comment.author.pic ? comment.author.pic : '/img/default-pic.png'} alt={comment.author.name} />
             </div>
             <div className="grow">
                 <div className="flex items-center gap-2">
