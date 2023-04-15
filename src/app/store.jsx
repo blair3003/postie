@@ -23,7 +23,6 @@ export const ApplicationContextProvider = ({ children }) => {
     const [user, setUser] = useState(null)
 
     const baseFetch = async (args) => {
-        console.log(args)
         const url = args?.url ? `http://localhost:3500/${args.url}` : null
         const method = args?.method ?? 'GET'
         const headers = args?.auth ? { 'Authorization': `Bearer ${token.current}` } : {}
