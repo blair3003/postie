@@ -4,19 +4,14 @@ import PostPreview from './posts/PostPreview'
 
 const Feed = () => {
 
-    const [posts, setPosts] = useState([])
-
+    const ready = useRef(true)
     const { getFetch, loading, error } = useApplicationContext()
+    const [posts, setPosts] = useState([])    
 
     const handleGetPosts = async () => {
-        // const data = await getPosts()
-
         const data = await getFetch({ url: 'posts' })
-
         if (data) setPosts(data)
-    }
-
-    const ready = useRef(true)
+    }    
 
     useEffect(() => {
         if (ready.current) {
