@@ -10,7 +10,7 @@ const Header = () => {
 
     return (
         <header className="bg-red-50 flex justify-between items-center relative pb-2">
-            <Link to="/" className="text-slate-900 text-3xl font-pacifico px-4">Postie</Link>
+            <Link to="/" className="text-slate-800 text-3xl font-pacifico px-4">Postie</Link>
             <button onClick={handleToggle} className="md:hidden text-zinc-100 hover:text-white bg-red-800 p-4 rounded-bl-lg">
                 {toggle ? <AiOutlineClose /> : <AiOutlineMenu />}
             </button>
