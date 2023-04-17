@@ -16,7 +16,6 @@
 .auto-grid {
     --min-column-size: 22rem;
     display: grid;
-    gap: 1rem;
     grid-template-columns: repeat(auto-fit, minmax(min(var(--min-column-size), 100%), 1fr));
 }
 
