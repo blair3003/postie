@@ -65,8 +65,8 @@ export const ApplicationContextProvider = ({ children }) => {
         return data        
     }
 
-    const updateToken = (token) => {
-        token.current = token
+    const updateToken = (newToken) => {
+        token.current = newToken
         updateUser()
     }
 
