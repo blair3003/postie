@@ -12,8 +12,11 @@ import Register from './features/auth/Register'
 import Profile from './features/auth/Profile'
 import ProfileEdit from './features/auth/ProfileEdit'
 import Auth from './components/Auth'
+import useTitle from './hooks/useTitle'
 
 function App() {
+    useTitle('Postie')
+
     return (
         <ApplicationContextProvider>
             <Routes>

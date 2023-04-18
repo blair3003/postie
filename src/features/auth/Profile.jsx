@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { format } from 'date-fns'
 import { AiFillEdit } from 'react-icons/ai'
 import { useApplicationContext } from '../../app/store'
+import useTitle from '../../hooks/useTitle'
 
 const Profile = () => {
 
@@ -27,6 +28,8 @@ const Profile = () => {
             return () => ready.current = false
         }
     }, [])
+
+    useTitle(profile?.name)
 
 
     return (

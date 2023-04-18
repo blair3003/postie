@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react'
 import { useLocation, useNavigate, Link } from 'react-router-dom'
 import { AiOutlineClose, AiOutlineCheck, AiOutlineLoading3Quarters, AiFillInfoCircle } from 'react-icons/ai'
 import { useApplicationContext } from '../../app/store'
+import useTitle from '../../hooks/useTitle'
 
 const Register = () => {
 
@@ -74,6 +75,8 @@ const Register = () => {
     useEffect(() => {
         if (error) errorRef.current.focus()
     }, [error])
+
+    useTitle('Register')
 
     return (
         <section className="max-w-xl mx-auto bg-red-900/50 text-black p-4 rounded-lg">

@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom'
 import { AiOutlineClose, AiOutlineCheck, AiOutlineLoading3Quarters, AiFillInfoCircle } from 'react-icons/ai'
 import { format } from 'date-fns'
 import { useApplicationContext } from '../../app/store'
+import useTitle from '../../hooks/useTitle'
 
 const ProfileEdit = () => {
 
@@ -107,6 +108,8 @@ const ProfileEdit = () => {
     useEffect(() => {
         if (error) errorRef.current.focus()
     }, [error])
+
+    useTitle('Edit profile')
 
 
     return (

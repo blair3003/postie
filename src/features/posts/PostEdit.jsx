@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { AiOutlinePlus, AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { useApplicationContext } from '../../app/store'
+import useTitle from '../../hooks/useTitle'
 
 const PostEdit = () => {
 
@@ -92,6 +93,8 @@ const PostEdit = () => {
             return () => ready.current = false
         }
     }, [])
+
+    useTitle('Edit post')
     
     return (
         <section className="max-w-xl mx-auto bg-red-900/50 text-black p-4 rounded-lg">

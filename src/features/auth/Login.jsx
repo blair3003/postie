@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate, Link } from 'react-router-dom'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { useApplicationContext } from '../../app/store'
+import useTitle from '../../hooks/useTitle'
 
 const Login = () => {
 
@@ -48,6 +49,8 @@ const Login = () => {
     useEffect(() => {
         if (error) errorRef.current.focus()
     }, [error])
+
+    useTitle('Login')
 
     return (
         <section className="max-w-xl mx-auto bg-red-900/50 text-black p-4 rounded-lg">

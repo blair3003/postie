@@ -6,24 +6,23 @@ import { format } from 'date-fns'
 import { useApplicationContext } from '../../app/store'
 import Comments from '../../components/Comments'
 import CommentCreate from '../../components/CommentCreate'
+import useTitle from '../../hooks/useTitle'
 
 const Post = () => {
 
-    const { id } = useParams()
-    const navigate = useNavigate()
-    const [post, setPost] = useState()
-
     const ready = useRef(true)
-
+    const navigate = useNavigate()
+    const { id } = useParams()
     const { getFetch, loading, error, user } = useApplicationContext() 
+    const [post, setPost] = useState()
 
     const canEdit = user?.roles.includes('admin') || user?.id === post?.author.id
 
-    const handleEditPost = () => navigate(`/posts/${id}/edit`)
-
     const handleGetPost = async () => {
         const data = await getFetch({ url: `posts/${id}` })
-        if (data) setPost(data)
+        if (data) {
+            setPost(data)
+        }
     }
 
     useEffect(() => {
@@ -32,6 +31,8 @@ const Post = () => {
             return () => ready.current = false
         }
     }, [])
+
+    useTitle(post?.title)
 
     return (
         loading ? null :
@@ -45,7 +46,7 @@ const Post = () => {
                     <Link to={`/users/${post.author.id}`} className="font-bold">{post.author.name}</Link>
                     <p>{format(Date.parse(post.createdAt), 'MMMM do, yyyy')}</p>
                 </div>
-                {canEdit ? <button onClick={handleEditPost} className="text-3xl hover:text-white">
+                {canEdit ? <button onClick={() => navigate(`/posts/${id}/edit`)} className="text-3xl hover:text-white">
                     <AiFillEdit />
                 </button> : null}
             </div>
