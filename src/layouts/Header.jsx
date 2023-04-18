@@ -1,21 +1,25 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai'
 import Nav from '../components/Nav'
 
 const Header = () => {
 
+    const { pathname } = useLocation()
     const [toggle, setToggle] = useState(false)
-    const handleToggle = () => setToggle(toggle => toggle ? false : true)
+
+    useEffect(() => {
+        setToggle(false)
+    }, [pathname])
 
     return (
-        <header className="bg-red-50 flex justify-between items-center relative pb-2">
-            <Link to="/" className="text-slate-800 text-3xl font-pacifico px-4">Postie</Link>
-            <button onClick={handleToggle} className="md:hidden text-zinc-100 hover:text-white bg-red-800 p-4 rounded-bl-lg">
+        <header className="bg-red-50 flex justify-between items-center relative p-4">
+            <Link to="/" className="text-slate-800 text-3xl font-pacifico">Postie</Link>
+            <button onClick={() => setToggle(toggle => toggle ? false : true)} className="md:hidden text-slate-800 text-3xl">
                 {toggle ? <AiOutlineClose /> : <AiOutlineMenu />}
             </button>
-            <Nav className="hidden md:flex gap-4 text-zinc-100 bg-red-800 p-4 rounded-bl-lg font-montserrat uppercase" />
-            {toggle ? <Nav className="md:hidden flex flex-col gap-4 absolute top-full left-0 bg-black text-white w-full p-4 rounded-b-lg menu-appear z-10" /> : null}
+            <Nav className="hidden md:flex gap-8 text-slate-800 font-pacifico text-xl" />
+            {toggle ? <Nav className="md:hidden flex flex-col gap-8 w-full absolute top-full left-0 z-10 px-4 py-8 rounded-b-lg menu-appear bg-slate-800 text-white font-pacifico text-xl" /> : null}
         </header>
     )
 }

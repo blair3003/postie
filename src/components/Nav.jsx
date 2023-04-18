@@ -10,9 +10,9 @@ const Nav = ({ className }) => {
         user ?
         
         <nav className={className}>
-            <NavLink to="/logout">Logout</NavLink>
-            <NavLink to={`/users/${user.id}`}>Profile</NavLink>
             <NavLink to="/posts/create">Create</NavLink>
+            <NavLink to={`/users/${user.id}`}>Profile</NavLink>
+            <NavLink to="/logout">Logout</NavLink>
         </nav> :
         
         <nav className={className}>
