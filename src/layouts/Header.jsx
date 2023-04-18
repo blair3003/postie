@@ -1,12 +1,22 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai'
 import Nav from '../components/Nav'
 
 const Header = () => {
 
+    const menu = useRef(null)
     const { pathname } = useLocation()
     const [toggle, setToggle] = useState(false)
+
+    const close = useCallback((e) => {
+        if (toggle && (!menu.current.contains(e.target) || e.target.getAttribute('href') === pathname)) setToggle(false)
+    }, [toggle, menu])
+
+    useEffect(() => {
+        window.addEventListener('mousedown', close)
+        return () => window.removeEventListener('mousedown', close)
+    }, [close])
 
     useEffect(() => {
         setToggle(false)
@@ -19,7 +29,7 @@ const Header = () => {
                 {toggle ? <AiOutlineClose /> : <AiOutlineMenu />}
             </button>
             <Nav className="hidden md:flex gap-8 text-slate-800 font-pacifico text-xl" />
-            {toggle ? <Nav className="md:hidden flex flex-col gap-8 w-full absolute top-full left-0 z-10 px-4 py-8 rounded-b-lg menu-appear bg-slate-800 text-white font-pacifico text-xl" /> : null}
+            {toggle ? <Nav innerRef={menu} className="md:hidden flex flex-col gap-8 w-full absolute top-full left-0 z-10 px-4 py-8 rounded-b-lg menu-appear bg-slate-800 text-white font-pacifico text-xl" /> : null}
         </header>
     )
 }
