@@ -55,12 +55,12 @@ export const ApplicationContextProvider = ({ children }) => {
 
     const getFetch = async (args) => {
         let response = await baseFetch(args)
-        if (!response) return
         if (response.status === 403) {
             const refresh = await refreshFetch()
-            if (!refresh) return
+            if (!refresh) return setError(true)
             response = await baseFetch(args)
         }
+        if (!response.ok) return setError(true)
         const data = await response.json()
         return data        
     }

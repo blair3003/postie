@@ -16,7 +16,7 @@ const Nav = ({ innerRef, className }) => {
         </nav> :
         
         <nav ref={innerRef} className={className}>
-            <NavLink to="/login" state={{ from: location }}>Login</NavLink>
+            <NavLink to="/login">Login</NavLink>
             <NavLink to="/register">Register</NavLink>
         </nav>
     )

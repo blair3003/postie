@@ -6,16 +6,15 @@ import useTitle from '../../hooks/useTitle'
 
 const Login = () => {
 
+    const location = useLocation()
+    const navigate = useNavigate()
+    const emailRef = useRef()
+    const errorRef = useRef()
+
     const { user, getFetch, updateToken, loading, error, setError, persist, setPersist } = useApplicationContext()
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-
-    const emailRef = useRef()
-    const errorRef = useRef()
-
-    const location = useLocation()
-    const navigate = useNavigate()
 
     const handleLogin = async e => {
         e.preventDefault()
@@ -28,9 +27,8 @@ const Login = () => {
                 password
             }
         })
-        if (data.accessToken && !error) {
+        if (data?.accessToken && !error) {
             updateToken(data.accessToken)
-            navigate(location.state.from.pathname, { replace: true })
         }
     }
 
@@ -53,14 +51,14 @@ const Login = () => {
     useTitle('Login')
 
     return (
-        <section className="max-w-xl mx-auto bg-red-900/50 text-black p-4 rounded-lg">
-            <h1 className="text-2xl text-white mb-4">Login</h1>
+        <section className="max-w-xl mx-auto bg-slate-800 p-4 rounded-lg shadow-xl">
+            <h1 className="text-2xl text-white p-2 mb-4 font-pacifico">Login</h1>
+            {error ? <p ref={errorRef} className="bg-red-600 text-white font-bold p-4 mb-4 rounded-lg shadow" aria-live="assertive">Error!</p> : null}
+            
             <form onSubmit={handleLogin} className="flex flex-col gap-4">
 
-                {error ? <p ref={errorRef} className="bg-black text-white font-bold p-4 rounded-lg" aria-live="assertive">Error!</p> : null}
-
                 <label htmlFor="email" className="offscreen">Email:</label>
-                <div className="rounded-lg flex items-center justify-between bg-white p-2">
+                <div className="flex items-center justify-between bg-white p-2 rounded-lg shadow-xl">
                     <input
                         type="email"
                         id="email"
@@ -74,7 +72,7 @@ const Login = () => {
                 </div>
 
                 <label htmlFor="password" className="offscreen">Password:</label>
-                <div className="rounded-lg flex items-center justify-between bg-white p-2">
+                <div className="flex items-center justify-between bg-white p-2 rounded-lg shadow-xl">
                     <input
                         type="password"
                         id="password"
@@ -88,15 +86,15 @@ const Login = () => {
 
                 <button
                     type="submit"
-                    className="p-4 bg-black hover:bg-yellow-500 text-white hover:text-black rounded-lg leading-none"
+                    className="p-4 bg-orange-600 hover:bg-orange-600/90 text-white font-bold rounded-lg leading-none shadow-xl"
                 >
-                    {loading ? <AiOutlineLoading3Quarters className="mx-auto" /> : 'Log in'}
+                    {loading ? <AiOutlineLoading3Quarters className="mx-auto" /> : 'log in'}
                 </button>
 
-                <label htmlFor="persist" className="flex items-center gap-2 cursor-pointer">
+                <label htmlFor="persist" className="flex items-center gap-2 text-white cursor-pointer px-2 text-sm">
                     <input
                         type="checkbox"
-                        className="w-6 h-6"
+                        className="w-6 h-6 cursor-pointer accent-teal-600 shadow-xl"
                         id="persist"
                         checked={persist}
                         onChange={() => setPersist(prev => !prev)}
@@ -106,8 +104,10 @@ const Login = () => {
 
             </form>
 
-            <p className="p-2 mt-2 text-white">Not registered? <br />
-            <Link to="/register" className="underline font-bold">Register</Link></p>
+            <p className="p-2 mt-4 text-white">
+                Not registered? <br />
+                <Link to="/register" className="underline font-bold">Register</Link>
+            </p>
 
         </section>
     )

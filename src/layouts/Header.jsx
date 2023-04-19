@@ -29,7 +29,7 @@ const Header = () => {
                 {toggle ? <AiOutlineClose /> : <AiOutlineMenu />}
             </button>
             <Nav className="hidden md:flex gap-8 text-slate-800 font-pacifico text-xl" />
-            {toggle ? <Nav innerRef={menu} className="md:hidden flex flex-col gap-8 w-full absolute top-full left-0 z-10 px-4 py-8 rounded-b-lg menu-appear bg-slate-800 text-white font-pacifico text-xl" /> : null}
+            {toggle ? <Nav innerRef={menu} className="md:hidden flex flex-col gap-8 w-full absolute top-full left-0 z-10 px-4 py-8 rounded-b-lg menu-appear bg-slate-800 text-white font-pacifico text-xl shadow-xl" /> : null}
         </header>
     )
 }
