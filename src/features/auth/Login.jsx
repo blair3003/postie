@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useLocation, useNavigate, Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 import { useApplicationContext } from '../../app/store'
 import useTitle from '../../hooks/useTitle'
@@ -11,13 +11,22 @@ const Login = () => {
     const emailRef = useRef()
     const errorRef = useRef()
 
-    const { user, getFetch, updateToken, loading, error, setError, persist, setPersist } = useApplicationContext()
+    const {
+        user,
+        getFetch,
+        updateToken,
+        loading,
+        error,
+        setError,
+        persist,
+        setPersist
+    } = useApplicationContext()
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
 
     const handleLogin = async e => {
-        e.preventDefault()
+        e.preventDefault()        
         const data = await getFetch({
             url: 'auth',
             method: 'POST',
@@ -27,9 +36,7 @@ const Login = () => {
                 password
             }
         })
-        if (data?.accessToken && !error) {
-            updateToken(data.accessToken)
-        }
+        if (data?.accessToken && !error) updateToken(data.accessToken)
     }
 
     useEffect(() => {
@@ -51,9 +58,11 @@ const Login = () => {
     useTitle('Login')
 
     return (
-        <section className="max-w-xl mx-auto bg-slate-800 p-4 rounded-lg shadow-xl">
+        <section className="max-w-xl mx-auto bg-slate-800 p-4 rounded-lg shadow-xl"> 
             <h1 className="text-2xl text-white p-2 mb-4 font-pacifico">Login</h1>
-            {error ? <p ref={errorRef} className="bg-red-600 text-white font-bold p-4 mb-4 rounded-lg shadow" aria-live="assertive">Error!</p> : null}
+            {error ? <p ref={errorRef} className="bg-red-600 text-white font-bold p-2 mb-4 rounded-lg shadow" aria-live="assertive">
+                <AiFillExclamationCircle className="inline mb-1" /> Error!
+            </p> : null}
             
             <form onSubmit={handleLogin} className="flex flex-col gap-4">
 
