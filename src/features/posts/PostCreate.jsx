@@ -1,10 +1,27 @@
-import { useEffect, useState } from 'react'
+import { useEffect,
+         useRef,
+         useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { AiOutlinePlus, AiOutlineLoading3Quarters } from 'react-icons/ai'
+import { AiFillExclamationCircle,
+         AiOutlineLoading3Quarters,
+         AiOutlinePlus,
+         AiOutlineUpload } from 'react-icons/ai'
 import { useApplicationContext } from '../../app/store'
 import useTitle from '../../hooks/useTitle'
 
 const PostCreate = () => {
+
+    const navigate = useNavigate()
+    const titleRef = useRef()
+    const errorRef = useRef()
+
+    const {
+        user,
+        getFetch,
+        loading,
+        error,
+        setError
+    } = useApplicationContext()
 
     const [title, setTitle] = useState('')
     const [thumbnail, setThumbnail] = useState(null)
@@ -12,16 +29,11 @@ const PostCreate = () => {
     const [tag, setTag] = useState('')
     const [tags, setTags] = useState([])
     const [authorId, setAuthorId] = useState('')
-
-    const navigate = useNavigate()
-
-    const { createPost, loading, error, user, getFetch } = useApplicationContext()
+    const [preview, setPreview] = useState('')
 
     const handleAddTag = e => {
         e.preventDefault()
-        if (tag && !tags.includes(tag.toLowerCase())) {
-            setTags(tags => [...tags, tag.toLowerCase()])
-        }
+        if (tag && !tags.includes(tag.toLowerCase())) setTags(tags => [...tags, tag.toLowerCase()])
         setTag('')
     }
 
@@ -29,17 +41,9 @@ const PostCreate = () => {
         setTags(tags => tags.filter(tag => tag !== e.target.textContent))
     }
 
-    const handleSubmitPost = async (e) => {
+    const handleSubmitPost = async e => {
         e.preventDefault()
-        if (![title, thumbnail, body, authorId].every(Boolean)) return
-        // const post = await createPost({
-        //     title,
-        //     thumbnail,
-        //     body,
-        //     tags,
-        //     authorId
-        // })
-
+        if (![title, thumbnail, body, authorId].every(Boolean)) return setError(true)
         const response = await getFetch({
             url: 'posts',
             method: 'POST',
@@ -52,78 +56,126 @@ const PostCreate = () => {
                 authorId
             }
         })
-
-        if (response && !error) {
-            navigate(`/posts/${response.post._id}`)
-        }        
+        if (response?.post && !error) navigate(`/posts/${response.post._id}`)
     }
+
+    useEffect(() => {
+        titleRef.current.focus()
+    }, [])
+
+    useEffect(() => {
+        if (thumbnail) {
+            setPreview(URL.createObjectURL(thumbnail))
+        } else setPreview('')
+    }, [thumbnail])
 
     useEffect(() => {
         if (user) setAuthorId(user.id)
     }, [user])
 
+    useEffect(() => {
+        setError(false)        
+    }, [title, thumbnail, body, tags])
+
+    useEffect(() => {
+        if (error) errorRef.current.focus()
+    }, [error])
+
     useTitle('Create post')
     
     return (
-        <section className="max-w-xl mx-auto bg-red-900/50 text-black p-4 rounded-lg">
-            <h1 className="text-2xl text-white mb-4">Create Post</h1>
+        <section className="max-w-xl mx-auto bg-slate-800 p-4 rounded-lg shadow-xl">
+            <h1 className="text-2xl text-white p-2 mb-4 font-pacifico">Create new post</h1>
+            {error ? <p ref={errorRef} className="bg-red-600 text-white font-bold p-2 mb-4 rounded-lg shadow" aria-live="assertive">
+                <AiFillExclamationCircle className="inline mb-1" /> Error!
+            </p> : null}
+
             <form onSubmit={handleSubmitPost} className="flex flex-col gap-4">
+
                 <label htmlFor="title" className="offscreen">Title:</label>
-                <input
-                    id="title"
-                    type="text"
-                    placeholder="Title"
-                    required
-                    className="rounded-lg p-4"
-                    value={title}
-                    onChange={e => setTitle(e.target.value)}
-                />
-                <label htmlFor="thumbnail" className="offscreen">Thumbnail:</label>
-                <input
-                    id="thumbnail"
-                    type="file"
-                    accept="image/*"
-                    required
-                    className="rounded-lg p-4"
-                    onChange={e => setThumbnail(e.target.files[0])}
-                />
-                <label htmlFor="body" className="offscreen">Body:</label>
-                <textarea
-                    id="body"
-                    placeholder="Body"
-                    rows="4"
-                    required
-                    className="rounded-lg p-4"
-                    value={body}
-                    onChange={e => setBody(e.target.value)}
-                ></textarea>
-                <div>
-                    <div className="flex items-center gap-2 flex-wrap mb-4">
-                        <h3 className="text-white text-xl font-montserrat uppercase">Tags:</h3>
-                        {tags ? tags.map(tag => (
-                            <div key={tag} onClick={handleRemoveTag} className="px-3 pb-1 bg-yellow-500 text-black rounded-full cursor-pointer">{tag}</div>
-                        )) : null}
-                    </div>
-                    
-                    <div className="flex bg-white rounded-lg p-1 max-w-xs gap-1">
-                        <label htmlFor="tag" className="offscreen">Add tag:</label>
-                        <input
-                            type="text"
-                            id="tag"
-                            placeholder="New tag"
-                            className="rounded-lg grow px-3"
-                            value={tag}
-                            onChange={e => setTag(e.target.value)}
-                        />
-                        <button type="button" disabled={loading} onClick={handleAddTag} className="p-4 hover:bg-yellow-500 text-black rounded-full w-12 h-12 flex justify-center items-center text-xl font-bold">
-                            <AiOutlinePlus />
-                        </button>
-                    </div>
+                <div className="flex items-center justify-between bg-white p-2 rounded-lg shadow-xl">
+                    <input
+                        id="title"
+                        type="text"
+                        placeholder="Title"
+                        className="rounded-lg p-2 grow"
+                        required
+                        ref={titleRef}
+                        value={title}
+                        onChange={e => setTitle(e.target.value)}
+                    />
                 </div>
-                <button type="submit" disabled={loading} className="p-4 bg-black hover:bg-yellow-500 text-white hover:text-black rounded-lg leading-none">
-                    {loading ? <AiOutlineLoading3Quarters className="mx-auto" /> : "Post"}
+
+                <label htmlFor="thumbnail" className="flex flex-col gap-2 p-2 cursor-pointer">
+                    <div className="flex items-center gap-4">
+                        <span className="text-white text-xl font-pacifico mb-1">Thumbnail:</span>
+                        {!thumbnail ? <span className="flex justify-center items-center w-10 h-10 bg-teal-600 hover:bg-teal-600/90 text-white text-2xl rounded-full shadow-xl">
+                            <AiOutlineUpload />
+                        </span> : null}
+                    </div>
+                    {thumbnail ? <img src={preview} /> : null}
+                    <input
+                        id="thumbnail"
+                        type="file"
+                        accept="image/*"
+                        className="offscreen"
+                        onChange={e => setThumbnail(e.target.files[0])}
+                    />
+                </label>       
+
+                <label htmlFor="body" className="offscreen">Body:</label>
+                <div className="flex items-center justify-between bg-white p-2 rounded-lg shadow-xl">
+                    <textarea
+                        id="body"
+                        placeholder="Tell us about this post"
+                        rows="4"
+                        required
+                        className="rounded-lg p-2 grow"
+                        value={body}
+                        onChange={e => setBody(e.target.value)}
+                    ></textarea>
+                </div>
+        
+                <div className="flex items-center gap-2 p-2 flex-wrap">
+                    <span className="text-white text-xl font-pacifico mb-2">Tags:</span>
+                    {tags.length ? tags.map(tag => (
+                        <span
+                            key={tag}
+                            onClick={handleRemoveTag}
+                            className="px-3 pb-1 bg-yellow-500 hover:bg-yellow-500/90 text-black text-sm rounded-full cursor-pointer"
+                        >{tag}</span>
+                    )) : null}
+                </div>
+                    
+                <label htmlFor="tag" className="offscreen">Add tag:</label>
+                <div className="flex items-center justify-between bg-white p-2 rounded-lg shadow-xl">
+                    <input
+                        type="text"
+                        id="tag"
+                        placeholder="Add a tag"
+                        className="rounded-lg p-2 grow"
+                        value={tag}
+                        onChange={e => setTag(e.target.value)}
+                    />
+                    <button
+                        type="button"
+                        onClick={handleAddTag}
+                        disabled={!loading ? false : true}
+                        className="flex justify-center items-center w-10 h-10 ml-2 text-white text-xl font-bold bg-teal-600 hover:bg-teal-600/90 shadow rounded-full"
+                    >
+                        <AiOutlinePlus />
+                    </button>
+                </div>          
+
+                <button
+                    type="submit"
+                    className="p-4 mb-8 bg-orange-600 hover:bg-orange-600/90 disabled:bg-orange-600/90 text-white font-bold rounded-lg leading-none shadow-xl"
+                    disabled={!loading ? false : true}
+                >
+                    {loading ? <AiOutlineLoading3Quarters className="mx-auto" /> : 'post'}
                 </button>
             </form>
+
         </section>
     )
 }

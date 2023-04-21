@@ -4,7 +4,7 @@ import { formatDistanceToNow } from 'date-fns'
 const PostPreview = ({ post }) => {
 
     return (
-        <article className="bg-white/50 p-4 rounded-lg m-4 shadow">
+        <article className="bg-white/50 p-4 rounded-lg shadow">
             <Link to={`/posts/${post._id}`} className="block aspect-video overflow-hidden rounded-lg">
                 <img src={post.thumbnail ? post.thumbnail : 'img/default-thumbnail.png'} alt={post.title} />
             </Link>

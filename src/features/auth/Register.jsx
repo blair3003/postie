@@ -193,9 +193,9 @@ const Register = () => {
                 <button
                     type="submit"
                     className="p-4 bg-orange-600 hover:bg-orange-600/90 disabled:bg-orange-600/90 text-white font-bold rounded-lg leading-none shadow-xl"
-                    disabled={nameValid && emailValid && passwordValid && matchValid ? false : true}
+                    disabled={!loading && nameValid && emailValid && passwordValid && matchValid ? false : true}
                 >
-                    {loading ? <AiOutlineLoading3Quarters className="mx-auto" /> : 'Register'}
+                    {loading ? <AiOutlineLoading3Quarters className="mx-auto" /> : 'register'}
                 </button>
             </form>
 

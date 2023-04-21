@@ -23,7 +23,7 @@ const Feed = () => {
     return (
         <section id="feed">
             <h1 className="offscreen">Feed</h1>
-            <div className="auto-grid">
+            <div className="auto-grid gap-8">
                 {loading ? <p>Loading...</p> :
                 error ? <p>Error loading posts!</p> : 
                 posts.length ? posts.map(post => <PostPreview key={post._id} post={post} />) : 'No posts to display.'}
