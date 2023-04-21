@@ -86,6 +86,7 @@ const PostCreate = () => {
     return (
         <section className="max-w-xl mx-auto bg-slate-800 p-4 rounded-lg shadow-xl">
             <h1 className="text-2xl text-white p-2 mb-4 font-pacifico">Create new post</h1>
+
             {error ? <p ref={errorRef} className="bg-red-600 text-white font-bold p-2 mb-4 rounded-lg shadow" aria-live="assertive">
                 <AiFillExclamationCircle className="inline mb-1" /> Error!
             </p> : null}
@@ -113,7 +114,7 @@ const PostCreate = () => {
                             <AiOutlineUpload />
                         </span> : null}
                     </div>
-                    {thumbnail ? <img src={preview} /> : null}
+                    {thumbnail ? <img src={preview} alt={title} className="shadow-xl"/> : null}
                     <input
                         id="thumbnail"
                         type="file"
