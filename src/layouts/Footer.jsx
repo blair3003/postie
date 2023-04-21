@@ -1,7 +1,7 @@
 const Footer = () => {
     return (
         <footer className="grid place-content-center bg-slate-800 p-4">
-            <p className="text-white">Postie &copy; {new Date().getFullYear()}</p>
+            <p className="text-white"><span className="font-pacifico">Postie</span> &copy; {new Date().getFullYear()}</p>
         </footer>
     )
 }
