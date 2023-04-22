@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { AiFillInfoCircle,
          AiFillExclamationCircle,
          AiOutlineCheck,
@@ -11,23 +11,17 @@ import useTitle from '../../hooks/useTitle'
 
 const Register = () => {
 
-    const location = useLocation()
     const navigate = useNavigate()
     const nameRef = useRef()
     const errorRef = useRef()
 
-    const {
-        NAME_REGEX,
-        EMAIL_REGEX,
-        PASSWORD_REGEX
-    } = useRegex()
-
-    const {
-        getFetch,
-        loading,
-        error,
-        setError
-    } = useApplicationContext()
+    const { NAME_REGEX,
+            EMAIL_REGEX,
+            PASSWORD_REGEX } = useRegex()
+    const { getFetch,
+            loading,
+            error,
+            setError } = useApplicationContext()
 
     const [name, setName] = useState('')
     const [nameValid, setNameValid] = useState(false)

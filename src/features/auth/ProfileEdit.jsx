@@ -1,25 +1,34 @@
-import { useState, useEffect, useRef } from 'react'
-import { useParams, useNavigate, useLocation } from 'react-router-dom'
-import { AiOutlineClose, AiOutlineCheck, AiOutlineLoading3Quarters, AiFillInfoCircle } from 'react-icons/ai'
-import { format } from 'date-fns'
+import { useEffect, useRef, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom'
+import { AiFillExclamationCircle,
+         AiFillInfoCircle,
+         AiOutlineCheck,
+         AiOutlineClose,
+         AiOutlineLoading3Quarters,
+         AiOutlineUpload } from 'react-icons/ai'
 import { useApplicationContext } from '../../app/store'
+import useRegex from '../../hooks/useRegex'
 import useTitle from '../../hooks/useTitle'
 
 const ProfileEdit = () => {
 
+    const navigate = useNavigate()
     const ready = useRef(true)
     const errorRef = useRef()
-    const navigate = useNavigate()
 
     const { id } = useParams()
-    const { getFetch, user, loading, error, setError } = useApplicationContext()
-
-    const isAdmin = user?.roles.includes('admin')
+    const { NAME_REGEX,
+            EMAIL_REGEX,
+            PASSWORD_REGEX } = useRegex()    
+    const { user,
+            getFetch,
+            loading,
+            error,
+            setError } = useApplicationContext()
 
     const [profile, setProfile] = useState()
     const [pic, setPic] = useState(null)
-    const [roles, setRoles] = useState(null)
-    const [active, setActive] = useState(null)
+    const [preview, setPreview] = useState('')
 
     const [name, setName] = useState('')
     const [nameValid, setNameValid] = useState(false)
@@ -37,22 +46,16 @@ const ProfileEdit = () => {
     const [matchValid, setMatchValid] = useState(false)
     const [matchFocus, setMatchFocus] = useState(false)
 
-    const NAME_REGEX = /^[a-zA-Z][a-zA-Z0-9-_' ]{0,23}$/
-    const EMAIL_REGEX = /^.+@.+\.[a-zA-Z]{2,}$/
-    const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!"£$%^&*()\-_=+{}[\]'@#~?/\\|,.<>]).{8,24}$/
-
     const handleGetProfile = async () => {
-        const canEdit = isAdmin || user?.id === id
-        if (!canEdit) navigate(`/users/${id}`)
+        if (!user?.roles.includes('admin') && user?.id !== id) navigate(`/users/${id}`)
         const data = await getFetch({ url: `users/${id}` })
         if (data) setProfile(data)
     }
 
     const handleUpdateProfile = async e => {
         e.preventDefault()
-        if (![name, email].every(Boolean)) return
-        if (password && (!passwordValid || !matchValid)) return
-
+        if (![name, email].every(Boolean)) return setError(true)
+        if (password && (!passwordValid || !matchValid)) return setError(true)
         const data = await getFetch({
             url: 'users',
             method: 'PATCH',
@@ -62,14 +65,10 @@ const ProfileEdit = () => {
                 name,
                 email,
                 password,
-                pic,
-                roles,
-                active
+                pic
             }
         })
-        if (data.updated && !error) {
-            navigate(`/users/${data.updated._id}`)
-        }
+        if (data?.updated && !error) navigate(`/users/${data.updated._id}`)
     }
 
     useEffect(() => {
@@ -85,6 +84,7 @@ const ProfileEdit = () => {
             setEmail(profile.email)
             setPassword('')
             setMatch('')
+            if (profile.pic) setPreview(profile.pic)
         }
     }, [profile])
 
@@ -102,8 +102,12 @@ const ProfileEdit = () => {
     }, [password, match])
 
     useEffect(() => {
+        if (pic) setPreview(URL.createObjectURL(pic))
+    }, [pic])
+
+    useEffect(() => {
         setError(false)        
-    }, [name, email, password, match, pic, roles, active])
+    }, [name, email, password, match, pic])
 
     useEffect(() => {
         if (error) errorRef.current.focus()
@@ -111,20 +115,20 @@ const ProfileEdit = () => {
 
     useTitle('Edit profile')
 
-
     return (
-        loading ? null :
-        !profile ? null :
+        !profile ? <p>Loading profile...</p> :
+        error ? <p>Error loading profile!</p> :
 
-        <section className="max-w-xl mx-auto bg-red-900/50 text-black p-4 rounded-lg">
-            <h1 className="text-2xl text-white mb-4">Edit User</h1>
+        <section className="max-w-xl mx-auto bg-slate-800 p-4 rounded-lg shadow-xl">
+            <h1 className="text-2xl text-white p-2 mb-4 font-pacifico">Edit user</h1>
+            {error ? <p ref={errorRef} className="bg-red-600 text-white font-bold p-2 mb-4 rounded-lg shadow" aria-live="assertive">
+                <AiFillExclamationCircle className="inline mb-1" /> Error!
+            </p> : null}
+
             <form onSubmit={handleUpdateProfile} className="flex flex-col gap-4">
 
-                {error ? <p ref={errorRef} className="bg-black text-white font-bold p-4 rounded-lg" aria-live="assertive">Error!</p> : null}
-
                 <label htmlFor="name" className="offscreen">Name:</label>
-
-                <div className="rounded-lg flex items-center justify-between bg-white p-2">
+                <div className="flex items-center justify-between bg-white p-2 rounded-lg shadow-xl">
                     <input
                         type="text"
                         id="name"
@@ -143,11 +147,11 @@ const ProfileEdit = () => {
                      name ? <AiOutlineClose className="mx-2 text-red-700" /> : null}                    
                 </div>
                 {name && nameFocus && !nameValid ? <p id="name-description" className="bg-black p-2 rounded-lg text-white">
-                    <AiFillInfoCircle className="inline mb-1"/> Must begin with a letter. 23 chars max. No funny business please.
+                    <AiFillInfoCircle className="inline mb-1"/> Must begin with a letter. 23 chars max.
                 </p> : null }
 
                 <label htmlFor="email" className="offscreen">Email:</label>
-                <div className="rounded-lg flex items-center justify-between bg-white p-2">
+                <div className="flex items-center justify-between bg-white p-2 rounded-lg shadow-xl">
                     <input
                         type="email"
                         id="email"
@@ -170,7 +174,7 @@ const ProfileEdit = () => {
                 </p> : null }
 
                 <label htmlFor="password" className="offscreen">Password:</label>
-                <div className="rounded-lg flex items-center justify-between bg-white p-2">
+                <div className="flex items-center justify-between bg-white p-2 rounded-lg shadow-xl">
                     <input
                         type="password"
                         id="password"
@@ -191,7 +195,7 @@ const ProfileEdit = () => {
                 </p> : null }
 
                 <label htmlFor="match" className="offscreen">Confirm Password:</label>
-                <div className="rounded-lg flex items-center justify-between bg-white p-2">
+                <div className="flex items-center justify-between bg-white p-2 rounded-lg shadow-xl">
                     <input
                         type="password"
                         id="match"
@@ -211,27 +215,29 @@ const ProfileEdit = () => {
                     <AiFillInfoCircle className="inline mb-1"/> Needs to match password.
                 </p> : null }
 
-                <label htmlFor="thumbnail" className="text-white text-xl font-montserrat uppercase">Profile pic:</label>
-                <input
-                    id="thumbnail"
-                    type="file"
-                    accept="image/*"
-                    className=""
-                    onChange={e => setPic(e.target.files[0])}
-                />
+                <label htmlFor="thumbnail" className="flex flex-col gap-2 p-2 cursor-pointer">
+                    <div className="flex items-center gap-4">
+                        <span className="text-white text-xl font-pacifico mb-1">Profile pic:</span>
+                        {!preview ? <span className="flex justify-center items-center w-10 h-10 bg-teal-600 hover:bg-teal-600/90 text-white text-2xl rounded-full shadow-xl">
+                            <AiOutlineUpload />
+                        </span> : null}
+                    </div>
+                    {preview ? <img src={preview} alt={name} className="shadow-xl"/> : null}
+                    <input
+                        id="thumbnail"
+                        type="file"
+                        accept="image/*"
+                        className="offscreen"
+                        onChange={e => setPic(e.target.files[0])}
+                    />
+                </label>
 
-                {!isAdmin ? null : <> 
-
-                <label htmlFor="roles" className="text-white text-xl font-montserrat uppercase">Roles:</label>
-
-
-
-                <label htmlFor="active" className="text-white text-xl font-montserrat uppercase">Active:</label>
-
-                </>}
-
-                <button type="submit" disabled={loading} className="p-4 bg-black hover:bg-yellow-500 text-white hover:text-black rounded-lg leading-none">
-                    {loading ? <AiOutlineLoading3Quarters className="mx-auto" /> : "Update"}
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="p-4 mb-8 bg-orange-600 hover:bg-orange-600/90 disabled:bg-orange-600/90 text-white font-bold rounded-lg leading-none shadow-xl"
+                >
+                    {loading ? <AiOutlineLoading3Quarters className="mx-auto" /> : "update"}
                 </button>
 
             </form>            
