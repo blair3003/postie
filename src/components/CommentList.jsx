@@ -10,18 +10,16 @@ const CommentList = ({ post, comments, depth = 0 }) => {
     return (
         <>
         {depth ?
-        <div className="ml-6 mb-2 px-4 py-2 hover:bg-red-900 rounded-full inline-block">
-            <button className="text-sky-600 font-bold flex items-center" onClick={() => setToggle(prev => !prev)}>
-                {toggle ? <AiFillCaretUp /> : <AiFillCaretDown />}
-                {toggle ? 'Hide replies' : (comments.length === 1) ? '1 reply' : comments.length + ' replies'}
-            </button>
-        </div> : null}
-        {toggle ?
+        <button className="ml-11 my-2 flex items-center gap-1 text-teal-600 hover:text-teal-600/90 font-bold " onClick={() => setToggle(prev => !prev)}>
+            {toggle ? <AiFillCaretUp /> : <AiFillCaretDown />}
+            {toggle ? 'Hide replies' : (comments.length === 1) ? '1 reply' : comments.length + ' replies'}
+        </button> : null}
+        {toggle &&
         <ol className={depth ? "pl-10" : null}>
         {comments.map((comment, index) =>
             <CommentListItem key={index} post={post} comment={comment} depth={depth} />
         )}
-        </ol> : null}
+        </ol>}
         </>
     )
 }

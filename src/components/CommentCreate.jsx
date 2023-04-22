@@ -1,16 +1,22 @@
 import { useEffect, useRef, useState } from 'react'
-import { AiOutlinePlus, AiOutlineLoading3Quarters } from 'react-icons/ai'
+import { Link } from 'react-router-dom'
+import { AiOutlinePlus } from 'react-icons/ai'
 import { useApplicationContext } from '../app/store'
 
 const CommentCreate = ({ post, parent }) => {
 
-    const { getFetch, user, loading, error } = useApplicationContext()
-
-    const [body, setBody] = useState('')
-
     const bodyRef = useRef()
 
-    const handleSubmitComment = async (e) => {
+    const {
+        user, 
+        getFetch,
+        loading,
+        error
+    } = useApplicationContext()
+    
+    const [body, setBody] = useState('')
+
+    const handleSubmitComment = async e => {
         e.preventDefault()
         if (!body) return
         const data = await getFetch({
@@ -28,44 +34,36 @@ const CommentCreate = ({ post, parent }) => {
     }
 
     useEffect(() => {
-        bodyRef.current.focus()
+        if (parent) bodyRef.current.focus()
     }, [])
 
     return (
-        <form onSubmit={handleSubmitComment} className="text-black">
-            
-            <div className="flex items-center gap-2">
-
-                
-                <div className="w-8">
-                    <img className="rounded-full drop-shadow" src={user?.pic ? user?.pic : '/img/default-pic.png'} alt={user?.name} />
-                </div>
-
-                <div className="flex items-center gap-2 grow rounded-lg p-1 bg-white">
-                    <label htmlFor="body" className="offscreen">Post a comment:</label>
+        <form onSubmit={handleSubmitComment}>            
+            <div className="flex items-center gap-2">                
+                <Link to={`/users/${user.id}`} className="w-10 h-10 overflow-hidden rounded-full shadow">
+                    <img src={user.pic ? user.pic : '/img/default-pic.png'} alt={user.name} />
+                </Link>
+                <label htmlFor="body" className="offscreen">Post a comment:</label>
+                <div className="flex items-center justify-between grow bg-white p-2 rounded-lg shadow">
                     <input
                         id="body"
                         type="text"
                         placeholder="Add a comment"
+                        className="rounded-lg p-2 grow"
                         required
-                        className="w-full rounded-lg p-2 bg-trans"
                         ref={bodyRef}
                         value={body}
                         onChange={e => setBody(e.target.value)}
                     />
                     <button
                         type="submit"
-                        className="p-4 hover:bg-yellow-500 text-black rounded-full w-12 h-12 flex justify-center items-center text-xl font-bold"
+                        className="flex justify-center items-center w-10 h-10 ml-2 text-white text-xl font-bold bg-teal-600 hover:bg-teal-600/90 shadow rounded-full"
                         disabled={loading}
                     >
                         <AiOutlinePlus />
                     </button>
-
                 </div>
-                
-
             </div>
-
         </form>
     )
 }

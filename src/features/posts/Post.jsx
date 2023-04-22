@@ -1,7 +1,6 @@
-import { useState, useEffect, useRef } from 'react'
-import { useParams, useNavigate, Link } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
 import { AiFillEdit } from 'react-icons/ai'
-import parse from 'html-react-parser'
 import { format } from 'date-fns'
 import { useApplicationContext } from '../../app/store'
 import Comments from '../../components/Comments'
@@ -10,19 +9,25 @@ import useTitle from '../../hooks/useTitle'
 
 const Post = () => {
 
-    const ready = useRef(true)
     const navigate = useNavigate()
+    const ready = useRef(true)
+    const titleRef = useRef()
+    
     const { id } = useParams()
-    const { getFetch, loading, error, user } = useApplicationContext() 
+    const {
+        user,
+        getFetch,
+        loading,
+        error
+    } = useApplicationContext()
+    
     const [post, setPost] = useState()
-
+    
     const canEdit = user?.roles.includes('admin') || user?.id === post?.author.id
 
     const handleGetPost = async () => {
         const data = await getFetch({ url: `posts/${id}` })
-        if (data) {
-            setPost(data)
-        }
+        if (data) setPost(data)
     }
 
     useEffect(() => {
@@ -32,41 +37,55 @@ const Post = () => {
         }
     }, [])
 
+    useEffect(() => {
+        if (post) titleRef.current.focus()
+    }, [post])
+
     useTitle(post?.title)
 
     return (
-        loading ? null :
-        post ?        
-        <article className="max-w-xl mx-auto bg-red-900/50 text-sky-200 sm:rounded-lg mb-8">
-            <div className="flex gap-4 p-4">
-                <div className="w-12">
-                    <img className="rounded-full drop-shadow" src={post.author.pic ? post.author.pic : '/img/default-pic.png'} alt={post.author.name} />
+        !post ? <p>Loading...</p> :
+        error ? <p>Error loading post!</p> :
+
+        <article className="max-w-2xl mx-auto bg-white/50 mb-8 rounded-lg shadow">
+
+            <div className="p-4">
+                <div className="flex gap-4">
+                    <Link to={`/users/${post.author.id}`} className="w-12 h-12 overflow-hidden rounded-full shadow">
+                        <img src={post.author.pic ? post.author.pic : '/img/default-pic.png'} alt={post.author.name} />
+                    </Link>
+                    <div className="grow">
+                        <Link to={`/users/${post.author.id}`} className="text-lg font-bold">{post.author.name}</Link>
+                        <p>{format(Date.parse(post.createdAt), 'MMMM do, yyyy')}</p>
+                    </div>
+                    {canEdit &&
+                    <button title="Delete post" onClick={() => navigate(`/posts/${id}/edit`)} className="text-3xl hover:text-black/90 p-2">
+                        <AiFillEdit />
+                    </button>}
                 </div>
-                <div className="grow">
-                    <Link to={`/users/${post.author.id}`} className="font-bold">{post.author.name}</Link>
-                    <p>{format(Date.parse(post.createdAt), 'MMMM do, yyyy')}</p>
-                </div>
-                {canEdit ? <button onClick={() => navigate(`/posts/${id}/edit`)} className="text-3xl hover:text-white">
-                    <AiFillEdit />
-                </button> : null}
+
+                <h1 ref={titleRef} className="text-2xl font-bold p-2">{post.title}</h1>
+
+                {post.tags?.length &&
+                <div className="flex gap-2 p-2">
+                    {post.tags.map(tag => <div key={tag} className="px-3 pb-1 bg-yellow-500 text-black text-sm rounded-full">{tag}</div>)}
+                </div>}
             </div>
-            <h1 className="text-2xl px-4 font-bold">{post.title}</h1>
-            <div className="flex gap-2 p-4">
-            {post.tags && post.tags.map(tag =>
-                <div key={tag} className="px-3 pb-1 bg-yellow-500 text-black rounded-full text-sm font-semibold">{tag}</div>
-            )}
-            </div>  
-            <div className="">
-                <img className="w-full" src={post.thumbnail ? post.thumbnail : '/img/default-thumbnail.png'} alt={post.title} />
+
+            <div className="flex flex-col">
+                <Link to={post.thumbnail} target="_blank">
+                    <img src={post.thumbnail} alt={post.title} />
+                </Link>
+                <p className="p-6 bg-slate-800 text-white">{post.body}</p>
             </div>
-            <div className="p-4">{parse(post.body)}</div>
-            <section className="p-4 flex flex-col gap-4">
+
+            <section className="p-6 flex flex-col gap-8">
                 <h2 className="offscreen">Comments</h2>
-                {user ? <CommentCreate post={id}/> : null}
+                {user &&
+                <CommentCreate post={id}/>}
                 <Comments post={id} comments={post.comments}/>
             </section>
         </article>
-        : null
     )
 }
 

@@ -5,7 +5,11 @@ import PostPreview from './posts/PostPreview'
 const Feed = () => {
 
     const ready = useRef(true)
-    const { getFetch, loading, error } = useApplicationContext()
+    const {
+        getFetch,
+        loading,
+        error
+    } = useApplicationContext()
     const [posts, setPosts] = useState([])    
 
     const handleGetPosts = async () => {
@@ -21,15 +25,17 @@ const Feed = () => {
     }, [])
 
     return (
+        loading ? <p>Loading...</p> :
+        error ? <p>Error loading posts!</p> :
+        !posts.length ? <p>No posts to display.</p> :
+
         <section id="feed">
             <h1 className="offscreen">Feed</h1>
             <div className="auto-grid gap-8">
-                {loading ? <p>Loading...</p> :
-                error ? <p>Error loading posts!</p> : 
-                posts.length ? posts.map(post => <PostPreview key={post._id} post={post} />) : 'No posts to display.'}
+                {posts.map(post => <PostPreview key={post._id} post={post} />)}
             </div>
         </section>
     )
 }
 
-export default Feed
+export default Feed 
