@@ -17,7 +17,7 @@ export const ApplicationContextProvider = ({ children }) => {
     const ready = useRef(true)
     const token = useRef('')
 
-    const [error, setError] = useState(false)
+    const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [persist, setPersist] = useState(JSON.parse(localStorage.getItem('persist')) || false)
     const [user, setUser] = useState(null)
@@ -29,13 +29,13 @@ export const ApplicationContextProvider = ({ children }) => {
         const credentials = args?.credentials ? 'include' : 'omit'
         const body = args?.body ? useFormData(args.body) : null
         try {
-            setError(false)
+            setError('')
             setLoading(true)            
             const response = await fetch(url, { method, headers, credentials, body })
             return response
         } catch (err) {
             console.error(err)
-            setError(true)
+            setError(err.message)
         } finally {
             setLoading(false)
         }
@@ -55,13 +55,14 @@ export const ApplicationContextProvider = ({ children }) => {
 
     const getFetch = async (args) => {
         let response = await baseFetch(args)
+        if (!response) return
         if (response.status === 403) {
             const refresh = await refreshFetch()
-            if (!refresh) return setError(true)
+            if (!refresh) return setError('Logged out')
             response = await baseFetch(args)
         }
-        if (!response.ok) return setError(true)
         const data = await response.json()
+        if (!response.ok) return setError(data.message)
         return data        
     }
 

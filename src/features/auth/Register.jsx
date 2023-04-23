@@ -75,7 +75,7 @@ const Register = () => {
     }, [password, match])
 
     useEffect(() => {
-        setError(false)        
+        setError('')        
     }, [name, email, password, match])
 
     useEffect(() => {
@@ -88,7 +88,7 @@ const Register = () => {
         <section className="max-w-xl mx-auto bg-slate-800 p-4 rounded-lg shadow-xl">
             <h1 className="text-2xl text-white p-2 mb-4 font-pacifico">Register new user</h1>
             {error ? <p ref={errorRef} className="bg-red-600 text-white font-bold p-2 mb-4 rounded-lg shadow" aria-live="assertive">
-                <AiFillExclamationCircle className="inline mb-1" /> Error!
+                <AiFillExclamationCircle className="inline mb-1" /> {error}
             </p> : null}
 
             <form onSubmit={handleRegister} className="flex flex-col gap-4">
@@ -189,7 +189,7 @@ const Register = () => {
                     className="p-4 bg-orange-600 hover:bg-orange-600/90 disabled:bg-orange-600/90 text-white font-bold rounded-lg leading-none shadow-xl"
                     disabled={!loading && nameValid && emailValid && passwordValid && matchValid ? false : true}
                 >
-                    {loading ? <AiOutlineLoading3Quarters className="mx-auto" /> : 'register'}
+                    {loading ? <AiOutlineLoading3Quarters className="mx-auto animate-spin" /> : 'register'}
                 </button>
             </form>
 

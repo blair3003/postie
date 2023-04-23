@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { AiOutlinePlus } from 'react-icons/ai'
+import { AiOutlineLoading3Quarters, AiOutlinePlus } from 'react-icons/ai'
 import { useApplicationContext } from '../app/store'
 
 const CommentCreate = ({ post, parent }) => {
@@ -60,7 +60,7 @@ const CommentCreate = ({ post, parent }) => {
                         className="flex justify-center items-center w-10 h-10 ml-2 text-white text-xl font-bold bg-teal-600 hover:bg-teal-600/90 shadow rounded-full"
                         disabled={loading}
                     >
-                        <AiOutlinePlus />
+                        {loading ? <AiOutlineLoading3Quarters className="animate-spin" /> : <AiOutlinePlus />}
                     </button>
                 </div>
             </div>

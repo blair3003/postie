@@ -5,6 +5,7 @@ import { format } from 'date-fns'
 import { useApplicationContext } from '../../app/store'
 import Comments from '../../components/Comments'
 import CommentCreate from '../../components/CommentCreate'
+import Loading from '../../components/Loading'
 import useTitle from '../../hooks/useTitle'
 
 const Post = () => {
@@ -17,7 +18,6 @@ const Post = () => {
     const {
         user,
         getFetch,
-        loading,
         error
     } = useApplicationContext()
     
@@ -27,7 +27,8 @@ const Post = () => {
 
     const handleGetPost = async () => {
         const data = await getFetch({ url: `posts/${id}` })
-        if (data) setPost(data)
+        if (!data) navigate('/')
+        setPost(data)
     }
 
     useEffect(() => {
@@ -44,8 +45,7 @@ const Post = () => {
     useTitle(post?.title)
 
     return (
-        !post ? <p>Loading...</p> :
-        error ? <p>Error loading post!</p> :
+        !post ? <Loading /> :
 
         <article className="max-w-2xl mx-auto bg-white/50 mb-8 rounded-lg shadow">
 
@@ -79,7 +79,7 @@ const Post = () => {
                 <p className="p-6 bg-slate-800 text-white">{post.body}</p>
             </div>
 
-            <section className="p-6 flex flex-col gap-8">
+            <section className="p-6 flex flex-col gap-8" id="comments">
                 <h2 className="offscreen">Comments</h2>
                 {user &&
                 <CommentCreate post={id}/>}

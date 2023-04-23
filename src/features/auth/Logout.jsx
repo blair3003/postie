@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useEffect, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { AiFillExclamationCircle } from 'react-icons/ai'
 import { useApplicationContext } from '../../app/store'
 
 const Logout = () => {
@@ -35,11 +36,11 @@ const Logout = () => {
     }, [error])
 
     return (
-        <section className="max-w-xl mx-auto bg-red-900/50 text-black p-4 rounded-lg">
-            <h1 className="text-2xl text-white mb-4">Logging out...</h1>
-
-            {error ? <p ref={errorRef} className="bg-black text-white font-bold p-4 rounded-lg" aria-live="assertive">Error!</p> : null}
-
+        <section className="max-w-xl mx-auto bg-slate-800 p-4 rounded-lg shadow-xl">
+            <h1 className="text-2xl text-white p-2 mb-4 font-pacifico">Logging out...</h1>
+            {error ? <p ref={errorRef} className="bg-red-600 text-white font-bold p-2 mb-4 rounded-lg shadow" aria-live="assertive">
+                <AiFillExclamationCircle className="inline mb-1" /> {error}
+            </p> : null}
         </section>
     )
 

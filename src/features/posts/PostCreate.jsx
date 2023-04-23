@@ -43,7 +43,7 @@ const PostCreate = () => {
 
     const handleSubmitPost = async e => {
         e.preventDefault()
-        if (![title, thumbnail, body, authorId].every(Boolean)) return setError(true)
+        if (![title, thumbnail, body, authorId].every(Boolean)) return setError('Missing required fields!')
         const response = await getFetch({
             url: 'posts',
             method: 'POST',
@@ -74,7 +74,7 @@ const PostCreate = () => {
     }, [user])
 
     useEffect(() => {
-        setError(false)        
+        setError('')        
     }, [title, thumbnail, body, tags])
 
     useEffect(() => {
@@ -88,7 +88,7 @@ const PostCreate = () => {
             <h1 className="text-2xl text-white p-2 mb-4 font-pacifico">Create new post</h1>
 
             {error ? <p ref={errorRef} className="bg-red-600 text-white font-bold p-2 mb-4 rounded-lg shadow" aria-live="assertive">
-                <AiFillExclamationCircle className="inline mb-1" /> Error!
+                <AiFillExclamationCircle className="inline mb-1" /> {error}
             </p> : null}
 
             <form onSubmit={handleSubmitPost} className="flex flex-col gap-4">
@@ -173,7 +173,7 @@ const PostCreate = () => {
                     className="p-4 mb-8 bg-orange-600 hover:bg-orange-600/90 disabled:bg-orange-600/90 text-white font-bold rounded-lg leading-none shadow-xl"
                     disabled={!loading ? false : true}
                 >
-                    {loading ? <AiOutlineLoading3Quarters className="mx-auto" /> : 'post'}
+                    {loading ? <AiOutlineLoading3Quarters className="mx-auto animate-spin" /> : 'post'}
                 </button>
             </form>
 

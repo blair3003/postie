@@ -7,6 +7,7 @@ import { AiFillExclamationCircle,
          AiOutlineLoading3Quarters,
          AiOutlineUpload } from 'react-icons/ai'
 import { useApplicationContext } from '../../app/store'
+import Loading from '../../components/Loading'
 import useRegex from '../../hooks/useRegex'
 import useTitle from '../../hooks/useTitle'
 
@@ -49,13 +50,14 @@ const ProfileEdit = () => {
     const handleGetProfile = async () => {
         if (!user?.roles.includes('admin') && user?.id !== id) navigate(`/users/${id}`)
         const data = await getFetch({ url: `users/${id}` })
-        if (data) setProfile(data)
+        if (!data) navigate('/')
+        setProfile(data)
     }
 
     const handleUpdateProfile = async e => {
         e.preventDefault()
-        if (![name, email].every(Boolean)) return setError(true)
-        if (password && (!passwordValid || !matchValid)) return setError(true)
+        if (![name, email].every(Boolean)) return setError('Missing required fields!')
+        if (password && (!passwordValid || !matchValid)) return setError('Passwords must match!')
         const data = await getFetch({
             url: 'users',
             method: 'PATCH',
@@ -106,7 +108,7 @@ const ProfileEdit = () => {
     }, [pic])
 
     useEffect(() => {
-        setError(false)        
+        setError('')        
     }, [name, email, password, match, pic])
 
     useEffect(() => {
@@ -116,13 +118,12 @@ const ProfileEdit = () => {
     useTitle('Edit profile')
 
     return (
-        !profile ? <p>Loading profile...</p> :
-        error ? <p>Error loading profile!</p> :
+        !profile ? <Loading /> :
 
         <section className="max-w-xl mx-auto bg-slate-800 p-4 rounded-lg shadow-xl">
             <h1 className="text-2xl text-white p-2 mb-4 font-pacifico">Edit user</h1>
             {error ? <p ref={errorRef} className="bg-red-600 text-white font-bold p-2 mb-4 rounded-lg shadow" aria-live="assertive">
-                <AiFillExclamationCircle className="inline mb-1" /> Error!
+                <AiFillExclamationCircle className="inline mb-1" /> {error}
             </p> : null}
 
             <form onSubmit={handleUpdateProfile} className="flex flex-col gap-4">
@@ -234,10 +235,10 @@ const ProfileEdit = () => {
 
                 <button
                     type="submit"
-                    disabled={loading}
+                    disabled={!loading && nameValid && emailValid ? false : true}
                     className="p-4 mb-8 bg-orange-600 hover:bg-orange-600/90 disabled:bg-orange-600/90 text-white font-bold rounded-lg leading-none shadow-xl"
                 >
-                    {loading ? <AiOutlineLoading3Quarters className="mx-auto" /> : "update"}
+                    {loading ? <AiOutlineLoading3Quarters className="mx-auto animate-spin" /> : "update"}
                 </button>
 
             </form>            

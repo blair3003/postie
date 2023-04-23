@@ -5,13 +5,13 @@ import { AiFillDelete,
          AiOutlineLoading3Quarters,
          AiOutlinePlus } from 'react-icons/ai'
 import { useApplicationContext } from '../../app/store'
+import Loading from '../../components/Loading'
 import useTitle from '../../hooks/useTitle'
 
 const PostEdit = () => {
 
     const navigate = useNavigate()
     const ready = useRef(true)
-    const titleRef = useRef()
     const errorRef = useRef()
 
     const { id } = useParams()
@@ -40,22 +40,21 @@ const PostEdit = () => {
         setTags(tags => tags.filter(tag => tag !== e.target.textContent))
     }
 
-    const handleDeletePost = async e => {
-        e.preventDefault()
-        if (confirm('Please confirm you would like to delete this post.')) {
-            const data = await getFetch({
-                url: 'posts',
-                method: 'DELETE',
-                auth: true,
-                body: { id }
-            })
-            if (data?.deleted && !error) navigate('/')
-        }
+    const handleGetPost = async () => {
+        const data = await getFetch({ url: `posts/${id}` })
+        if (!data) navigate('/')
+        if (!user?.roles.includes('admin') && user?.id !== data?.author.id) navigate(`/posts/${id}`)
+        setTitle(data.title)
+        setThumbnail(data.thumbnail)
+        setBody(data.body)
+        setTags(data.tags)
+        setAuthorId(data.author.id)
+
     }
 
     const handleUpdatePost = async (e) => {
         e.preventDefault()
-        if (![id, title, body].every(Boolean)) return setError(true)
+        if (![id, title, body].every(Boolean)) return setError('Missing required fields!')
         const data = await getFetch({
             url: 'posts',
             method: 'PATCH',
@@ -71,15 +70,16 @@ const PostEdit = () => {
         if (data?.updated && !error) navigate(`/posts/${data.updated._id}`)
     }
 
-    const handleGetPost = async () => {
-        const data = await getFetch({ url: `posts/${id}` })
-        if (data) {
-            if (!user?.roles.includes('admin') && user?.id !== data?.author.id) navigate(`/posts/${id}`)
-            setTitle(data.title)
-            setThumbnail(data.thumbnail)
-            setBody(data.body)
-            setTags(data.tags)
-            setAuthorId(data.author.id)
+    const handleDeletePost = async e => {
+        e.preventDefault()
+        if (confirm('Please confirm you would like to delete this post.')) {
+            const data = await getFetch({
+                url: 'posts',
+                method: 'DELETE',
+                auth: true,
+                body: { id }
+            })
+            if (data?.deleted && !error) navigate('/')
         }
     }
 
@@ -91,11 +91,7 @@ const PostEdit = () => {
     }, [])
 
     useEffect(() => {
-        titleRef.current.focus()
-    }, [])
-
-    useEffect(() => {
-        setError(false)
+        setError('')
     }, [title, body, tags])
 
     useEffect(() => {
@@ -105,6 +101,8 @@ const PostEdit = () => {
     useTitle('Edit post')
     
     return (
+        !title ? <Loading /> :
+
         <section className="max-w-xl mx-auto bg-slate-800 p-4 rounded-lg shadow-xl">
             <div className="flex items-center justify-between p-2 mb-4">
                 <h1 className="text-2xl text-white font-pacifico">Edit post</h1>
@@ -119,7 +117,7 @@ const PostEdit = () => {
             </div>
 
             {error ? <p ref={errorRef} className="bg-red-600 text-white font-bold p-2 mb-4 rounded-lg shadow" aria-live="assertive">
-                <AiFillExclamationCircle className="inline mb-1" /> Error!
+                <AiFillExclamationCircle className="inline mb-1" /> {error}
             </p> : null}
 
             <form onSubmit={handleUpdatePost} className="flex flex-col gap-4">
@@ -132,7 +130,6 @@ const PostEdit = () => {
                         placeholder="Title"
                         required
                         className="rounded-lg p-2 grow"
-                        ref={titleRef}
                         value={title}
                         onChange={e => setTitle(e.target.value)}
                     />
@@ -191,7 +188,7 @@ const PostEdit = () => {
                     className="p-4 mb-8 bg-orange-600 hover:bg-orange-600/90 disabled:bg-orange-600/90 text-white font-bold rounded-lg leading-none shadow-xl"
                     disabled={!loading ? false : true}
                 >
-                    {loading ? <AiOutlineLoading3Quarters className="mx-auto" /> : 'update'}
+                    {loading ? <AiOutlineLoading3Quarters className="mx-auto animate-spin" /> : 'update'}
                 </button>
 
             </form>

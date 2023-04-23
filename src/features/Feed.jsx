@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useApplicationContext } from '../app/store'
+import Loading from '../components/Loading'
 import PostPreview from './posts/PostPreview'
 
 const Feed = () => {
@@ -25,15 +26,15 @@ const Feed = () => {
     }, [])
 
     return (
-        loading ? <p>Loading...</p> :
-        error ? <p>Error loading posts!</p> :
-        !posts.length ? <p>No posts to display.</p> :
-
+        error ? <p>Error loading feed!</p> :
+        loading ? <Loading /> :
+        
         <section id="feed">
             <h1 className="offscreen">Feed</h1>
+            {posts.length ?
             <div className="auto-grid gap-8">
                 {posts.map(post => <PostPreview key={post._id} post={post} />)}
-            </div>
+            </div> : null }
         </section>
     )
 }

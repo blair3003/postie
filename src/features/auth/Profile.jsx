@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { format } from 'date-fns'
 import { AiFillEdit, AiOutlineCheck, AiOutlineClose } from 'react-icons/ai'
 import { useApplicationContext } from '../../app/store'
+import Loading from '../../components/Loading'
 import useTitle from '../../hooks/useTitle'
 
 const Profile = () => {
@@ -21,7 +22,8 @@ const Profile = () => {
 
     const handleGetProfile = async () => {
         const data = await getFetch({ url: `users/${id}` })
-        if (data) setProfile(data)
+        if (!data) navigate('/')
+        setProfile(data)
     }
 
     useEffect(() => {
@@ -34,14 +36,13 @@ const Profile = () => {
     useTitle(profile?.name)
 
     return (
-        !profile ? <p>Loading profile...</p> :
-        error ? <p>Error loading profile!</p> :
+        !profile ? <Loading /> :
 
         <article className="max-w-2xl mx-auto bg-white/50 p-4 mb-8 rounded-lg shadow">
             <div className="flex items-center justify-between gap-4">
                 <h1 className="text-2xl p-2 font-pacifico">User profile</h1>
                 {canEdit &&
-                <button onClick={navigate(`/users/${id}/edit`)} className="text-3xl hover:text-black/90 p-2">
+                <button onClick={() => navigate(`/users/${id}/edit`)} className="text-3xl hover:text-black/90 p-2">
                     <AiFillEdit />
                 </button>}
             </div>

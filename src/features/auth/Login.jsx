@@ -48,7 +48,7 @@ const Login = () => {
     }, [user])
 
     useEffect(() => {
-        setError(false)        
+        setError('')        
     }, [email, password])
 
     useEffect(() => {
@@ -61,7 +61,7 @@ const Login = () => {
         <section className="max-w-xl mx-auto bg-slate-800 p-4 rounded-lg shadow-xl"> 
             <h1 className="text-2xl text-white p-2 mb-4 font-pacifico">Login</h1>
             {error ? <p ref={errorRef} className="bg-red-600 text-white font-bold p-2 mb-4 rounded-lg shadow" aria-live="assertive">
-                <AiFillExclamationCircle className="inline mb-1" /> Error!
+                <AiFillExclamationCircle className="inline mb-1" /> {error}
             </p> : null}
             
             <form onSubmit={handleLogin} className="flex flex-col gap-4">
@@ -97,7 +97,7 @@ const Login = () => {
                     type="submit"
                     className="p-4 bg-orange-600 hover:bg-orange-600/90 text-white font-bold rounded-lg leading-none shadow-xl"
                 >
-                    {loading ? <AiOutlineLoading3Quarters className="mx-auto" /> : 'log in'}
+                    {loading ? <AiOutlineLoading3Quarters className="mx-auto animate-spin" /> : 'log in'}
                 </button>
 
                 <label htmlFor="persist" className="flex items-center gap-2 text-white cursor-pointer px-2 text-sm">
