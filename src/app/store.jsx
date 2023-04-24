@@ -23,7 +23,7 @@ export const ApplicationContextProvider = ({ children }) => {
     const [user, setUser] = useState(null)
 
     const baseFetch = async (args) => {
-        const url = args?.url ? `http://localhost:3500/${args.url}` : null
+        const url = args?.url ? `https://postie-api.onrender.com/${args.url}` : null
         const method = args?.method ?? 'GET'
         const headers = args?.auth ? { 'Authorization': `Bearer ${token.current}` } : {}
         const credentials = args?.credentials ? 'include' : 'omit'
