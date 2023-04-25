@@ -115,7 +115,7 @@ const ProfileEdit = () => {
         if (error) errorRef.current.focus()
     }, [error])
 
-    useTitle('Edit profile')
+    useTitle('Edit user')
 
     return (
         !profile ? <Loading /> :
