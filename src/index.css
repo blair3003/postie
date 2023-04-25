@@ -6,6 +6,10 @@
     display: none;
 }
 
+html {
+    scrollbar-width: none;
+}
+
 #root {
     min-height: 100vh;
     display: flex;
@@ -35,8 +39,4 @@
 
 img {
     width: 100%;
-}
-
-main {
-    scrollbar-width: none;
 }
