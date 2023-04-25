@@ -39,7 +39,7 @@ const CommentCreate = ({ post, parent }) => {
 
     return (
         <form onSubmit={handleSubmitComment}>            
-            <div className="flex items-center gap-2">                
+            <div className="flex items-center justify-between gap-2">                
                 <Link to={`/users/${user.id}`} className="w-10 h-10 overflow-hidden rounded-full shadow">
                     <img src={user.pic ? user.pic : '/img/default-pic.png'} alt={user.name} />
                 </Link>
