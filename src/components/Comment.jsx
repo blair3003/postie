@@ -12,7 +12,7 @@ const Comment = ({ post, comment }) => {
 
     return (
         <div className="flex gap-2">
-            <Link to={`/users/${comment.author.id}`} className="w-10 h-10 overflow-hidden rounded-full shadow">
+            <Link to={`/users/${comment.author.id}`} className="shrink-0 w-10 h-10 overflow-hidden rounded-full shadow">
                 <img src={comment.author.pic ? comment.author.pic : '/img/default-pic.png'} alt={comment.author.name} />
             </Link>
             <div className="grow">

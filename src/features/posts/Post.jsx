@@ -51,7 +51,7 @@ const Post = () => {
 
             <div className="p-4">
                 <div className="flex gap-4">
-                    <Link to={`/users/${post.author.id}`} className="w-12 h-12 overflow-hidden rounded-full shadow">
+                    <Link to={`/users/${post.author.id}`} className="shrink-0 w-12 h-12 overflow-hidden rounded-full shadow">
                         <img src={post.author.pic ? post.author.pic : '/img/default-pic.png'} alt={post.author.name} />
                     </Link>
                     <div className="grow">
