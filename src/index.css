@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+::-webkit-scrollbar {
+    display: none;
+}
+
 #root {
     min-height: 100vh;
     display: flex;
@@ -27,4 +31,12 @@
 @keyframes appear {
     0% { transform: scaleY(0); }
     100% { transform: scaleY(1); }
+}
+
+img {
+    width: 100%;
+}
+
+main {
+    scrollbar-width: none;
 }
