@@ -4,7 +4,7 @@ A progessive web application, built using the MERN stack, that provides a commun
  
 ## The App
 
-The Postie app is a React application that uses client-side routing...
+Postie is a React application that provides a front end userface to the Postie API. It uses client-side routing, data provision through context, protected routes, and persistent login.
 
 [Postie →](https://postie.onrender.com)
 
