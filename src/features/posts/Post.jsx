@@ -68,7 +68,7 @@ const Post = () => {
 
                 {post.tags?.length &&
                 <div className="flex gap-2 p-2">
-                    {post.tags.map(tag => <div key={tag} className="px-3 pb-1 bg-yellow-500 text-black text-sm rounded-full">{tag}</div>)}
+                    {post.tags.map(tag => <div key={tag} className="px-3 bg-yellow-500 text-black text-sm rounded-full">{tag}</div>)}
                 </div>}
             </div>
 

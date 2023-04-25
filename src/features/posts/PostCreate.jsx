@@ -143,7 +143,7 @@ const PostCreate = () => {
                         <span
                             key={tag}
                             onClick={handleRemoveTag}
-                            className="px-3 pb-1 bg-yellow-500 hover:bg-yellow-500/90 text-black text-sm rounded-full cursor-pointer"
+                            className="px-3 bg-yellow-500 hover:bg-yellow-500/90 text-black text-sm rounded-full cursor-pointer"
                         >{tag}</span>
                     )) : null}
                 </div>
