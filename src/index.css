@@ -40,3 +40,7 @@ html {
 img {
     width: 100%;
 }
+
+input {
+    width: 0;
+}

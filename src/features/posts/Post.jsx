@@ -59,7 +59,7 @@ const Post = () => {
                         <p>{format(Date.parse(post.createdAt), 'MMMM do, yyyy')}</p>
                     </div>
                     {canEdit &&
-                    <button title="Delete post" onClick={() => navigate(`/posts/${id}/edit`)} className="text-3xl hover:text-black/90 p-2">
+                    <button title="Edit post" onClick={() => navigate(`/posts/${id}/edit`)} className="text-3xl hover:text-black/90 p-2">
                         <AiFillEdit />
                     </button>}
                 </div>
@@ -67,7 +67,7 @@ const Post = () => {
                 <h1 ref={titleRef} className="text-2xl font-bold p-2">{post.title}</h1>
 
                 {post.tags?.length &&
-                <div className="flex gap-2 p-2">
+                <div className="flex gap-2 p-2 flex-wrap">
                     {post.tags.map(tag => <div key={tag} className="px-3 bg-yellow-500 text-black text-sm rounded-full">{tag}</div>)}
                 </div>}
             </div>

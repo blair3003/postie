@@ -105,7 +105,7 @@ const PostEdit = () => {
 
         <section className="max-w-xl mx-auto bg-slate-800 p-4 rounded-lg shadow-xl">
             <div className="flex items-center justify-between p-2 mb-4">
-                <h1 className="text-2xl text-white font-pacifico">Edit post</h1>
+                <h1 className="text-2xl text-white font-pacifico">Delete post</h1>
                 <button
                     type="button"
                     disabled={loading}
