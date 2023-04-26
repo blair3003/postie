@@ -42,9 +42,14 @@ export const ApplicationContextProvider = ({ children }) => {
     }
 
     const refreshFetch = async () => {
-        if (!persist) return
+        console.log('refreshing')
+        if (!persist) {
+            console.log('no persist')
+            return
+        }
         const refresh = await baseFetch({ url: 'auth/refresh', credentials: true })
         if (!refresh.ok) {
+            console.log('refresh not ok')
             updateToken(null)
             return false
         }
@@ -67,11 +72,13 @@ export const ApplicationContextProvider = ({ children }) => {
     }
 
     const updateToken = (newToken) => {
+        console.log('updating token')
         token.current = newToken
         updateUser()
     }
 
     const updateUser = () => {
+        console.log('updating user')
         if (token.current) {
             const { id, name, email, pic, roles } = jwtDecode(token.current).user
             setUser({ id, name, email, pic, roles })
@@ -86,6 +93,13 @@ export const ApplicationContextProvider = ({ children }) => {
             return () => ready.current = false
         }
     }, [])
+
+    useEffect(() => {
+        if (user) {
+            console.log('user')
+            console.log(user)
+        } else console.log('no user')
+    }, [user])
 
     useEffect(() => {
         localStorage.setItem('persist', JSON.stringify(persist))
