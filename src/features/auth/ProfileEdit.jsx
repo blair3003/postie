@@ -72,6 +72,7 @@ const ProfileEdit = () => {
             }
         })
         if (data?.updated && !error) {
+            console.log('profile updated')
             refreshFetch()
             navigate(`/users/${data.updated._id}`)
         }
