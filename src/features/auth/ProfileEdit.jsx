@@ -23,6 +23,7 @@ const ProfileEdit = () => {
             PASSWORD_REGEX } = useRegex()    
     const { user,
             getFetch,
+            refreshFetch,
             loading,
             error,
             setError } = useApplicationContext()
@@ -70,7 +71,10 @@ const ProfileEdit = () => {
                 pic
             }
         })
-        if (data?.updated && !error) navigate(`/users/${data.updated._id}`)
+        if (data?.updated && !error) {
+            refreshFetch()
+            navigate(`/users/${data.updated._id}`)
+        }
     }
 
     useEffect(() => {

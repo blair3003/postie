@@ -94,6 +94,7 @@ export const ApplicationContextProvider = ({ children }) => {
     return (
         <ApplicationContext.Provider value={{
             error,
+            refreshFetch,
             getFetch,
             loading,
             persist,
