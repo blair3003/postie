@@ -1,12 +1,24 @@
 # Postie
 
-A progessive web application, built using the MERN stack, that provides a community of authenticated users to post and comment on images.
+Postie is a progessive web application, built using the MERN stack, that provides a community of authenticated users to post and comment on images.
+
+https://postie.onrender.com
  
 ## The App
 
-Postie is a React application that provides a front end userface to the Postie API. It uses client-side routing, data provision through context, protected routes, and persistent login.
+The front-end is a React application that provides a user interface to the Postie API. It uses client-side routing, data provision through context, protected routes, and persistent login. Users can register on the site, login, and begin posting images and commenting on other posts.
 
-[Postie →](https://postie.onrender.com)
+## Features
+
+Features of the app include:
+
+- **Application Context** - A context is used to provide global state management - error and loading states, as well as current user information and fetch methods are available through the store.
+- **Authentication** - Users can register and log in to create new posts and add comments - access tokens are sent to the api to confirm identify and roles.
+- **Authorisation** - Users are assigned the author role on registration - this allows them to create, edit and delete their own posts. The admin role allows access to modify all posts.
+- **Persistent login** - A cookie is used to refresh the user's access token after it expires, or on application reload, avoiding the need to log in again.
+- **Error handling** - Error messages, including validation errors, are displayed to the user in an aesthetically consistent manner.
+- **Image cache** - Images are cached on the server to improve application load speed.
+
 
 ## The API
 
