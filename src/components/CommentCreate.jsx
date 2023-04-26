@@ -30,7 +30,10 @@ const CommentCreate = ({ post, parent }) => {
                 parentId: parent?._id
             }
         })
-        if (data && !error) location.reload()
+        if (data && !error) {
+            setBody('')
+            location.reload()
+        }
     }
 
     useEffect(() => {
