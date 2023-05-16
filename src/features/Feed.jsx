@@ -27,7 +27,7 @@ const Feed = () => {
 
     return (
         error ? <p>Error loading feed!</p> :
-        loading ? <Loading /> :
+        loading ? <><Loading /> Please allow up to a minute for the Render.com server to wake up.</> :
         
         <section id="feed">
             <h1 className="offscreen">Feed</h1>
