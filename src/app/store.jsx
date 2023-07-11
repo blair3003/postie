@@ -17,6 +17,8 @@ export const ApplicationContextProvider = ({ children }) => {
     const ready = useRef(true)
     const token = useRef('')
 
+    const [serverReady, setServerReady] = useState(false)
+
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
     const [persist, setPersist] = useState(JSON.parse(localStorage.getItem('persist')) || false)
@@ -37,6 +39,7 @@ export const ApplicationContextProvider = ({ children }) => {
             console.error(err)
             setError(err.message)
         } finally {
+            setServerReady(true)
             setLoading(false)
         }
     }
@@ -92,6 +95,7 @@ export const ApplicationContextProvider = ({ children }) => {
 
     return (
         <ApplicationContext.Provider value={{
+            serverReady,
             error,
             refreshFetch,
             getFetch,
