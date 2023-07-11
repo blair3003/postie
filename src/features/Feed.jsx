@@ -7,6 +7,7 @@ const Feed = () => {
 
     const ready = useRef(true)
     const {
+        serverReady,
         getFetch,
         loading,
         error
@@ -27,7 +28,8 @@ const Feed = () => {
 
     return (
         error ? <p>Error loading feed!</p> :
-        loading ? <><Loading /> Please allow a few minutes for the Render.com server to wake up.</> :
+        !serverReady ? <p>Please allow a few minutes for the Render.com server to wake up.</p> :
+        loading ? <Loading /> :
         
         <section id="feed">
             <h1 className="offscreen">Feed</h1>
