@@ -1,6 +1,6 @@
 # Postie
 
-Postie is a progessive web application, built using the MERN stack, that provides a community of authenticated users to post and comment on images.
+Postie is a progressive web application, built using the MERN stack, that provides a community of authenticated users a platform to post and comment on images.
 
 https://postie.onrender.com
  
